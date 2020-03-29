@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Deploy failed</h1>
+
+<p>
+	Deploying the configuration failed.
+</p>
+
+{% for e in errors %}
+<div class="alert alert-danger" role="alert">
+	<pre>{{ e }}</pre>
+  </div>
+{% endfor %}
+
+{% endblock %}

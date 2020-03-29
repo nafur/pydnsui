@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load fontawesome_5 %}
+
+{% block content %}
+<h1>Federation</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>IPv4</th>
+			<th>IPv6</th>
+			<th>Admins</th>
+			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:server-create' %}">{% fa5_icon 'plus' %} New server</a></th>
+		</tr>
+	</thead>
+{% for server in object_list %}
+	<tr>
+		<th>
+			<a href="{{ server.get_absolute_url }}">{{ server.name }}</a>
+			{% if server.is_this_server %}
+				*
+			{% endif %}
+		</th>
+		<td>{{ server.ipv4 }}</td>
+		<td>{{ server.ipv6 }}</td>
+		<td>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

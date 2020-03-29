@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load fontawesome_5 %}
+
+{% block content %}
+<h1>Zone {{ object.name }}</h1>
+
+<dl>
+	<dt>Name</dt>
+	<dd>{{ object.name }}</dd>
+	<dt>Enabled</dt>
+	<dd>{% if object.enabled %}Yes{% else %}No{% endif %}</dd>
+	<dt>Admins</dt>
+	<dd>{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
+</dl>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>TTL</th>
+			<th>Class</th>
+			<th>Type</th>
+			<th>Data</th>
+			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'record-create' zone.pk %}">{% fa5_icon 'plus' %} New record</a></th>
+		</tr>
+	</thead>
+{% for record in object.records.all %}
+	<tr>
+		<th>{{ record.rname }}</th>
+		<td>{{ record.rttl }}</td>
+		<td>{{ record.rclass }}</td>
+		<td>{{ record.rtype }}</td>
+		<td>{{ record.rdata }}</td>
+		<td>
+			<a class="btn btn-sm btn-primary" href="{% url 'record-edit' record.pk %}">{% fa5_icon 'edit' %} edit</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'record-delete' record.pk %}">{% fa5_icon 'trash' %} delete</a>
+		</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

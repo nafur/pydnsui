@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Deploy configuration</h1>
+
+<p>
+	Please review the files shown below.
+	Do you really want to deploy this configuration?
+</p>
+
+{% crispy form form_helper %}
+
+<ul class="nav nav-tabs" id="deployTab" role="tablist">
+{% for file in files %}
+	<li class="nav-item">
+		<a class="nav-link{% if file.active %} active{% endif %}" id="{{ file.name }}-tab" data-toggle="tab" href="#{{ file.name }}" role="tab" aria-controls="{{ file.name }}" aria-selected="false">{{ file.name }}</a>
+	</li>
+{% endfor %}
+</ul>
+<div class="tab-content" id="deployTabContent">
+{% for file in files %}
+	<div class="tab-pane fade{% if file.active %} show active{% endif %}" id="{{ file.name }}" role="tabpanel" aria-labelledby="{{ file.name }}-tab">
+		Deploy to: <code>{{ file.filename }}</code>
+
+		<div class="card">
+			<div class="card-body">
+				<pre>{{ file.content }}</pre>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+</div>
+
+{% endblock %}

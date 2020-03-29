@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Federation server {{ object.name }}</h1>
+
+<dl>
+	<dt>Name</dt>
+	<dd>{{ object.name }}</dd>
+	<dt>Admins</dt>
+	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
+	<dt>IPv4 address</dt>
+	<dd>{{ object.ipv4 }}</dd>
+	<dt>IPv6 address</dt>
+	<dd>{{ object.ipv6 }}</dd>
+	<dt>Master zones</dt>
+	<dd>
+		{% for record in object.zones_master.all %}
+			<span class="badge badge-light"><a href="{{ record.get_absolute_url }}">{{ record }}</a></span>
+		{% endfor %}
+	</dd>
+	<dt>Slave zones</dt>
+	<dd>
+		{% for record in object.zones_slave.all %}
+			<span class="badge badge-light"><a href="{{ record.get_absolute_url }}">{{ record }}</a></span>
+		{% endfor %}
+	</dd>
+</dl>
+
+{% endblock %}

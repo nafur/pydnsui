@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Delete Record</h1>
+
+<form method="POST">
+	{% csrf_token %}
+	Do you really want to remove {{ object.name }}? <br />
+	{{form.as_p}}
+	<div class="form-actions">
+		<button type="Submit" class="btn btn-danger">Delete</button>
+	</div>
+</form>
+
+{% endblock %}

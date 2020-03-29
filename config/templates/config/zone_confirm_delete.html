@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Delete zone</h1>
+
+<form method="POST">
+	{% csrf_token %}
+	Do you really want to remove {{ object.name }}? <br />
+	<p class="text-danger">Please note that this will silently remove all records associated with this zone!</p>
+	{{form.as_p}}
+	<div class="form-actions">
+		<button type="Submit" class="btn btn-danger">Delete</button>
+	</div>
+</form>
+
+{% endblock %}

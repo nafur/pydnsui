@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load fontawesome_5 %}
+
+{% block content %}
+<h1>Zone {{ object.name }}</h1>
+
+<dl>
+	<dt>Name</dt>
+	<dd>{{ object.name }}</dd>
+	<dt>Enabled</dt>
+	<dd>{% if object.enabled %}Yes{% else %}No{% endif %}</dd>
+	<dt>Master server</dt>
+	<dd><a href="{{ object.master.get_absolute_url }}">{{ object.master.name }}</a></dd>
+	<dt>Slave server</dt>
+	<dd>
+		{% if object.slaves_all %}ALL{% endif %}
+		{% for s in object.slaves.all %}
+			<span class="badge badge-secondary"><a href="{{ s.get_absolute_url }}">{{ s.name }}</a></span>
+		{% endfor %}
+	</dd>
+</dl>
+
+{% endblock %}
