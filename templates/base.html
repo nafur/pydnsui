@@ -18,8 +18,15 @@
 					<ul class="navbar-nav">
 					{% if user.is_authenticated %}
 						<li class="nav-item"><a class="nav-link active" href="{% url 'zone-list' %}">{% fa5_icon 'cogs' %} Local configuration</a></li>
-						<li class="nav-item"><a class="nav-link active" href="{% url 'fed:server-list' %}">{% fa5_icon 'server' %} Federation server</a></li>
-						<li class="nav-item"><a class="nav-link active" href="{% url 'fed:zone-list' %}">Federation zones</a></li>
+						<li></li>
+						<li class="nav-item dropdown">
+							<a class="nav-link active dropdown-toggle" id="dropdown-federation" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{% fa5_icon 'cloud' %} Federation</a>
+							<div class="dropdown-menu" aria-labelledby="dropdown-federation">
+								<a class="dropdown-item" href="{% url 'fed:remote-list' %}">Remotes</a>
+								<a class="dropdown-item" href="{% url 'fed:server-list' %}">Server</a>
+								<a class="dropdown-item" href="{% url 'fed:zone-list' %}">Zones</a>
+							</div>
+						</li>
 					{% endif %}
 					</ul>
 					<ul class="navbar-nav ml-auto">

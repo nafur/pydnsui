@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% if object %}
+<h1>Edit remote {{ object.name }}</h1>
+{% else %}
+<h1>New remote</h1>
+{% endif %}
+
+{% crispy form form_helper %}
+
+{% endblock %}

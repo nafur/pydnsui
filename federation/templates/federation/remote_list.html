@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load fontawesome_5 %}
+{% load helpers %}
+
+{% block content %}
+<h1>Federation::Remotes</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>URL</th>
+			<th>Importer</th>
+			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:remote-create' %}">{% fa5_icon 'plus' %} New remote</a></th>
+		</tr>
+	</thead>
+{% for remote in object_list %}
+	<tr{% if not remote.enabled %} class="table-secondary"{% endif %}>
+		<th>{% enabled_icon remote %} <a href="{{ remote.get_absolute_url }}">{{ remote.name }}</a></th>
+		<td><code>{{ remote.url }}</code></td>
+		<td>{{ remote.importer }}</td>
+		<td>
+			{% if remote.enabled %}
+				<a class="btn btn-sm btn-secondary" href="{% url 'fed:remote-disable' remote.pk %}">{% fa5_icon 'ban' %} disable</a>
+			{% else %}
+				<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-enable' remote.pk %}">{% fa5_icon 'check' %} enable</a>
+			{% endif %}
+			<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-edit' remote.pk %}">{% fa5_icon 'edit' %} edit</a>
+		</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

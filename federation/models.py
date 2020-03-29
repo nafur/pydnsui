@@ -3,6 +3,33 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+class Remote(models.Model):
+	name = models.CharField(
+		max_length = 255,
+		unique = True,
+		help_text = "Unique identifier for this server. Maybe the FQDN?",
+	)
+	enabled = models.BooleanField(
+		default = True,
+		verbose_name = "Remote is enabled",
+	)
+	url = models.URLField(
+		help_text = "URL where to pull the information.",
+	)
+	importer = models.CharField(
+		max_length = 2,
+		choices = [('DE', 'Default')],
+		default = 'DE',
+		verbose_name = 'Importer',
+	)
+
+	def __str__(self):
+		return self.name
+	def get_absolute_url(self):
+		return reverse('fed:remote-edit', kwargs = {
+			'pk': self.pk,
+		})
+
 class Server(models.Model):
 	name = models.CharField(
 		max_length = 255,
@@ -52,6 +79,13 @@ class Zone(models.Model):
 	enabled = models.BooleanField(
 		default = True,
 		verbose_name = "Zone is enabled",
+	)
+	remote = models.ForeignKey(Remote,
+		on_delete = models.CASCADE,
+		blank = True,
+		null = True,
+		verbose_name = "Remote configuration server",
+		related_name = 'zones',
 	)
 	master = models.ForeignKey(Server,
 		on_delete = models.CASCADE,

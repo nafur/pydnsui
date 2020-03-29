@@ -7,6 +7,55 @@ from . import models, views
 
 app_name = 'fed'
 urlpatterns = [
+	path('remote',
+		login_required(
+			ListView.as_view(model = models.Remote)
+		),
+		name = 'remote-list',
+	),
+	path('remote/create', 
+		login_required(
+			CrispyCreateView.as_view(
+				model = models.Remote,
+				fields = [
+					'name', 'enabled', 'url', 'importer'
+				],
+				form_submit_text = 'Submit',
+			)
+		),
+		name = 'remote-create',
+	),
+	path('remote/<int:pk>/edit',
+		login_required(
+			CrispyUpdateView.as_view(
+				model = models.Remote,
+				fields = [
+					'name', 'enabled', 'url', 'importer'
+				],
+				form_submit_text = 'Submit',
+				success_url = reverse_lazy('fed:remote-list'),
+			)
+		),
+		name = 'remote-edit',
+	),
+	path('remote/<int:pk>/disable',
+		login_required(
+			DisableView.as_view(
+				model = models.Remote,
+				redirect_url = reverse_lazy('fed:remote-list')
+			)
+		),
+		name = 'remote-disable',
+	),
+	path('remote/<int:pk>/enable',
+		login_required(
+			EnableView.as_view(
+				model = models.Remote,
+				redirect_url = reverse_lazy('fed:remote-list')
+			)
+		),
+		name = 'remote-enable',
+	),
 	path('server',
 		login_required(
 			ListView.as_view(model = models.Server)
