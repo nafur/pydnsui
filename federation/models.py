@@ -19,30 +19,29 @@ class Server(models.Model):
 		verbose_name = "Admin users",
 		help_text = "Users that may modify this server.",
 	)
-	push_url = models.URLField(
-		help_text = "URL where to push the information.",
+	pull_url = models.URLField(
+		blank = True,
+		help_text = "URL where to pull the information.",
 	)
-	push_enabled = models.BooleanField(
+	pull_enabled = models.BooleanField(
 		default = True,
-		verbose_name = "Zone is enabled",
+		verbose_name = "Pull is enabled",
 	)
-	push_token = models.CharField(
+	pull_token = models.CharField(
+		blank = True,
 		max_length = 255,
 		verbose_name = "Token",
 	)
-	last_push = models.DateTimeField(
+	pull_servers = models.ManyToManyField(
+		'self',
+		blank = True,
+		verbose_name = "servers to pull from here",
+		related_name = "servers",
+	)
+	pull_last = models.DateTimeField(
 		blank = True,
 		null = True,
-		help_text = "Last push to this server"
-	)
-	receive_token = models.CharField(
-		max_length = 255,
-		verbose_name = "Token",
-	)
-	last_received = models.DateTimeField(
-		blank = True,
-		null = True,
-		help_text = "Last push from this server"
+		help_text = "Last pull from this server"
 	)
 	ipv4 = models.GenericIPAddressField(
 		protocol = 'IPv4',
@@ -66,8 +65,12 @@ class Server(models.Model):
 	def is_this_server(self):
 		return settings.SERVER_NAME == self.name
 	def is_push_recent(self):
+		if self.last_push is None:
+			return False
 		return self.last_push > datetime.now() - datetime.hour(1)
 	def is_receive_recent(self):
+		if self.last_received is None:
+			return False
 		return self.last_received > datetime.now() - datetime.hour(1)
 
 class Zone(models.Model):

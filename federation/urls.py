@@ -17,7 +17,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'admins', 'push_url', 'push_enabled', 'ipv4', 'ipv6', 'token' ],
+				fields = [ 'name', 'enabled', 'admins', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -33,7 +33,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'admins', 'push_url', 'push_enabled', 'ipv4', 'ipv6', 'token' ],
+				fields = [ 'name', 'enabled', 'admins', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -57,25 +57,25 @@ urlpatterns = [
 		),
 		name = 'server-enable',
 	),
-	path('server/<int:pk>/disable-push',
+	path('server/<int:pk>/disable-pull',
 		login_required(
 			DisableView.as_view(
 				model = models.Server,
 				redirect_url = reverse_lazy('fed:server-list'),
-				property_name = 'push_enabled'
+				property_name = 'pull_enabled'
 			)
 		),
-		name = 'server-disable-push',
+		name = 'server-disable-pull',
 	),
-	path('server/<int:pk>/enable-push',
+	path('server/<int:pk>/enable-pull',
 		login_required(
 			EnableView.as_view(
 				model = models.Server,
 				redirect_url = reverse_lazy('fed:server-list'),
-				property_name = 'push_enabled'
+				property_name = 'pull_enabled'
 			)
 		),
-		name = 'server-enable-push',
+		name = 'server-enable-pull',
 	),
 	path('zone',
 		login_required(

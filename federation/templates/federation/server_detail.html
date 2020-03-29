@@ -10,14 +10,14 @@
 	<dd>{{ object.enabled }}</dd>
 	<dt>Admins</dt>
 	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
-	<dt>Push</dt>
-	<dd>{{ object.push_enabled }} (last {{ object.last_push|date:'%d.%m.%Y %H:%M' }})</dd>
-	<dt>Push URL</dt>
-	<dd>{{ object.push_url }}</dd>
-	<dt>Push token</dt>
-	<dd><code>{{ object.push_token }}</code></dd>
-	<dt>Receive token</dt>
-	<dd><code>{{ object.receive_token }}</code> (last {{ object.last_received|date:'%d.%m.%Y %H:%M' }})</dd>
+	<dt>Pull</dt>
+	<dd>{% if object.pull_enabled %}Enabled{% else %}Disabled{% endif %} from <code>{{ object.pull_url }}</code></dd>
+	<dt>Last pull</dt>
+	<dd>{{ object.last_push|date:'%d.%m.%Y %H:%M' }}</dd>
+	<dt>Pull token</dt>
+	<dd><code>{{ object.pull_token }}</code></dd>
+	<dt>Pull other servers</dt>
+	<dd>{% for s in server.pull_servers.all %}<span class="badge badge-secondary">{{ s.name }}</span>{% endfor %}</dd>
 	<dt>IPv4 address</dt>
 	<dd>{{ object.ipv4 }}</dd>
 	<dt>IPv6 address</dt>
