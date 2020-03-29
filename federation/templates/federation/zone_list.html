@@ -12,7 +12,6 @@
 			<th>Name</th>
 			<th>Master</th>
 			<th>Slaves</th>
-			<th>Admins</th>
 			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:zone-create' %}">{% fa5_icon 'plus' %} New zone</a></th>
 		</tr>
 	</thead>
@@ -21,14 +20,11 @@
 		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
 		<td><a href="{{ zone.master.get_absolute_url }}">{{ zone.master.name }}</a></td>
 		<td>
-			{% if zone.slaves_all %}
-			ALL
-			{% endif %}
+			{% if zone.slaves_all %}{% fa5_icon 'globe' title='use all' %}{% endif %}
 			{% for s in zone.slaves.all %}
-			<span class="badge badge-secondary"><a href="{{ s.get_absolute_url }}">{{ s.name }}</a></span>
+			<a href="{{ s.get_absolute_url }}"><span class="badge badge-secondary">{{ s.name }}</span></a>
 			{% endfor %}
 		</td>
-		<td>{% for u in zone.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</td>
 		<td>
 			{% if zone.enabled %}
 				<a class="btn btn-sm btn-secondary" href="{% url 'fed:zone-disable' zone.pk %}">{% fa5_icon 'ban' %} disable</a>
