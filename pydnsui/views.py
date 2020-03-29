@@ -34,22 +34,23 @@ class CrispyUpdateView(FormHelperMixin, UpdateView):
 class CrispyDeleteView(DeleteView):
 	pass
 
-class DisableView(RedirectView):
+class PropertyModifierView(RedirectView):
 	permanent = False
 	model = None
+	property_name = None
+	property_value = None
 	redirect_url = None
+
 	def get_redirect_url(self, *args, **kwargs):
 		obj = self.model.objects.get(pk = kwargs['pk'])
-		obj.enabled = False
+		obj.__dict__[self.property_name] = self.property_value
 		obj.save()
 		return self.redirect_url
 
-class EnableView(RedirectView):
-	permanent = False
-	model = None
-	redirect_url = None
-	def get_redirect_url(self, *args, **kwargs):
-		obj = self.model.objects.get(pk = kwargs['pk'])
-		obj.enabled = True
-		obj.save()
-		return self.redirect_url
+class DisableView(PropertyModifierView):
+	property_name = 'enabled'
+	property_value = False
+
+class EnableView(PropertyModifierView):
+	property_name = 'enabled'
+	property_value = True

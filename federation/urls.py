@@ -7,61 +7,6 @@ from . import models, views
 
 app_name = 'fed'
 urlpatterns = [
-	path('remote',
-		login_required(
-			ListView.as_view(model = models.Remote)
-		),
-		name = 'remote-list',
-	),
-	path('remote/create', 
-		login_required(
-			CrispyCreateView.as_view(
-				model = models.Remote,
-				fields = [
-					'name', 'enabled', 'url', 'importer'
-				],
-				form_submit_text = 'Submit',
-			)
-		),
-		name = 'remote-create',
-	),
-	path('remote/<int:pk>/edit',
-		login_required(
-			CrispyUpdateView.as_view(
-				model = models.Remote,
-				fields = [
-					'name', 'enabled', 'url', 'importer'
-				],
-				form_submit_text = 'Submit',
-				success_url = reverse_lazy('fed:remote-list'),
-			)
-		),
-		name = 'remote-edit',
-	),
-	path('remote/<int:pk>/disable',
-		login_required(
-			DisableView.as_view(
-				model = models.Remote,
-				redirect_url = reverse_lazy('fed:remote-list')
-			)
-		),
-		name = 'remote-disable',
-	),
-	path('remote/<int:pk>/enable',
-		login_required(
-			EnableView.as_view(
-				model = models.Remote,
-				redirect_url = reverse_lazy('fed:remote-list')
-			)
-		),
-		name = 'remote-enable',
-	),
-	path('remote/<int:pk>/import',
-		login_required(
-			views.RemoteManualImportView.as_view()
-		),
-		name = 'remote-import',
-	),
 	path('server',
 		login_required(
 			ListView.as_view(model = models.Server)
@@ -72,9 +17,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Server,
-				fields = [
-					'name', 'admins', 'ipv4', 'ipv6', 'token'
-				],
+				fields = [ 'name', 'enabled', 'admins', 'push_url', 'push_enabled', 'ipv4', 'ipv6', 'token' ],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -85,6 +28,54 @@ urlpatterns = [
 			DetailView.as_view(model = models.Server)
 		),
 		name = 'server-detail',
+	),
+	path('server/<int:pk>/edit',
+		login_required(
+			CrispyUpdateView.as_view(
+				model = models.Server,
+				fields = [ 'name', 'enabled', 'admins', 'push_url', 'push_enabled', 'ipv4', 'ipv6', 'token' ],
+				form_submit_text = 'Submit',
+			)
+		),
+		name = 'server-edit',
+	),
+	path('server/<int:pk>/disable',
+		login_required(
+			DisableView.as_view(
+				model = models.Server,
+				redirect_url = reverse_lazy('fed:server-list')
+			)
+		),
+		name = 'server-disable',
+	),
+	path('server/<int:pk>/enable',
+		login_required(
+			EnableView.as_view(
+				model = models.Server,
+				redirect_url = reverse_lazy('fed:server-list')
+			)
+		),
+		name = 'server-enable',
+	),
+	path('server/<int:pk>/disable-push',
+		login_required(
+			DisableView.as_view(
+				model = models.Server,
+				redirect_url = reverse_lazy('fed:server-list'),
+				property_name = 'push_enabled'
+			)
+		),
+		name = 'server-disable-push',
+	),
+	path('server/<int:pk>/enable-push',
+		login_required(
+			EnableView.as_view(
+				model = models.Server,
+				redirect_url = reverse_lazy('fed:server-list'),
+				property_name = 'push_enabled'
+			)
+		),
+		name = 'server-enable-push',
 	),
 	path('zone',
 		login_required(

@@ -6,12 +6,24 @@
 <dl>
 	<dt>Name</dt>
 	<dd>{{ object.name }}</dd>
+	<dt>Enabled</dt>
+	<dd>{{ object.enabled }}</dd>
 	<dt>Admins</dt>
 	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
+	<dt>Push</dt>
+	<dd>{{ object.push_enabled }} (last {{ object.last_push|date:'%d.%m.%Y %H:%M' }})</dd>
+	<dt>Push URL</dt>
+	<dd>{{ object.push_url }}</dd>
+	<dt>Push token</dt>
+	<dd><code>{{ object.push_token }}</code></dd>
+	<dt>Receive token</dt>
+	<dd><code>{{ object.receive_token }}</code> (last {{ object.last_received|date:'%d.%m.%Y %H:%M' }})</dd>
 	<dt>IPv4 address</dt>
 	<dd>{{ object.ipv4 }}</dd>
 	<dt>IPv6 address</dt>
 	<dd>{{ object.ipv6 }}</dd>
+	<dt>Nameserver</dt>
+	<dd>{{ object.nameserver }}</dd>
 	<dt>Master zones</dt>
 	<dd>
 		{% for record in object.zones_master.all %}
