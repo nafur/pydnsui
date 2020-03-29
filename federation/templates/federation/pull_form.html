@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Pull from {{ object.name }}</h1>
+
+<pre>{{ data }}</pre>
+
+{% crispy form form_helper %}
+
+{% endblock %}

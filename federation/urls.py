@@ -131,4 +131,14 @@ urlpatterns = [
 		),
 		name = 'zone-enable',
 	),
+	path('export/zones',
+		views.ExportZonesView.as_view(),
+		name = 'export-zones',
+	),
+	path('pull/<int:pk>',
+		login_required(
+			views.PullManualView.as_view()
+		),
+		name = 'pull',
+	)
 ]
