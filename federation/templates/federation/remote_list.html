@@ -27,6 +27,7 @@
 				<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-enable' remote.pk %}">{% fa5_icon 'check' %} enable</a>
 			{% endif %}
 			<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-edit' remote.pk %}">{% fa5_icon 'edit' %} edit</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-import' remote.pk %}">{% fa5_icon 'cloud-download-alt' %} import</a>
 		</td>
 	</tr>
 {% endfor %}

@@ -56,6 +56,12 @@ urlpatterns = [
 		),
 		name = 'remote-enable',
 	),
+	path('remote/<int:pk>/import',
+		login_required(
+			views.RemoteManualImportView.as_view()
+		),
+		name = 'remote-import',
+	),
 	path('server',
 		login_required(
 			ListView.as_view(model = models.Server)

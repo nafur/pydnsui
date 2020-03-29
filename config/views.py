@@ -36,12 +36,6 @@ class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, ed
 	template_name = 'config/deploy_form.html'
 	success_url = reverse_lazy('zone-list')
 
-	def render_master_zone(self, zone):
-		pass
-
-	def render_slave_zone(self, zone):
-		pass
-
 	def get_slaves_for_zone(self, zone, fed_master_zones, fed_slaves):
 		if zone.name in fed_master_zones:
 			if fed_master_zones[zone.name].slaves_all:
@@ -49,7 +43,6 @@ class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, ed
 			else:
 				return fed_master_zones[mz.name].slaves.all()
 		return []
-
 
 	def render_configuration(self):
 		# This server as a federation.models.Server
