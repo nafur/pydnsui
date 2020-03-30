@@ -19,6 +19,11 @@ class Server(models.Model):
 		verbose_name = "Admin users",
 		help_text = "Users that may modify this server.",
 	)
+	auth_token = models.CharField(
+		max_length = 255,
+		default = "",
+		verbose_name = "Authorization token",
+	)
 	pull_url = models.URLField(
 		blank = True,
 		help_text = "URL where to pull the information.",

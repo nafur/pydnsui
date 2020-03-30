@@ -22,7 +22,7 @@ class ExportZonesView(View):
 
 	def post(self, request, *args, **kwargs):
 		try:
-			server = models.Server.objects.get(pull_token = request.POST['token'])
+			server = models.Server.objects.get(auth_token = request.POST['token'])
 		except:
 			return HttpResponse('Invalid token', status = 401)
 		zones = models.Zone.objects.filter(
@@ -53,7 +53,10 @@ class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateRes
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['data'] = self.download_from_server()
+		try:
+			context['data'] = self.download_from_server()
+		except urllib.request.HTTPError as e:
+			context['error'] = e
 		return context
 	
 	def get_or_create_server(self, name):

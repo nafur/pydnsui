@@ -5,7 +5,14 @@
 {% block content %}
 <h1>Pull from {{ object.name }}</h1>
 
+{% if error %}
+<div class="alert alert-danger">
+	<pre>{{ error }}</pre>
+</div>
+{% endif %}
+{% if data %}
 <pre>{{ data }}</pre>
+{% endif %}
 
 {% crispy form form_helper %}
 
