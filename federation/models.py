@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 
 from datetime import datetime
@@ -77,6 +78,12 @@ class Server(models.Model):
 		if self.last_received is None:
 			return False
 		return self.last_received > datetime.now() - datetime.hour(1)
+	@staticmethod
+	def get_this_server():
+		return Server.objects.get(name = settings.SERVER_NAME)
+	@staticmethod
+	def get_other_servers():
+		return Server.objects.exclude(name = settings.SERVER_NAME)
 
 class Zone(models.Model):
 	name = models.CharField(
@@ -108,3 +115,18 @@ class Zone(models.Model):
 		return reverse('fed:zone-detail', kwargs = {
 			'pk': self.pk,
 		})
+	
+	@staticmethod
+	def get_master_zones():
+		return Zone.objects.filter(
+			Q(enabled = True) & Q(master = Server.get_this_server())
+		)
+	@staticmethod
+	def get_slave_zones():
+		this_server = Server.get_this_server()
+		return Zone.objects.filter(
+			Q(enabled = True) & (
+				Q(slaves = this_server) |
+				(Q(slaves_all = True) & ~Q(master = this_server))
+			)
+		)

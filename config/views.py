@@ -41,30 +41,23 @@ class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, ed
 			if fed_master_zones[zone.name].slaves_all:
 				return fed_slaves
 			else:
-				return fed_master_zones[mz.name].slaves.all()
+				return fed_master_zones[zone.name].slaves.all()
 		return []
 
 	def render_configuration(self):
 		# This server as a federation.models.Server
-		this_server = federation.models.Server.objects.get(name = settings.SERVER_NAME)
+		this_server = federation.models.Server.get_this_server()
 		# All other servers as a federation.models.Server
-		fed_slaves = federation.models.Server.objects.exclude(name = settings.SERVER_NAME)
+		fed_slaves = federation.models.Server.get_other_servers()
 		# Local zones
 		master_zones = models.Zone.objects.filter(enabled = True)
 		# Federated zones where we are the master
 		fed_master_zones = {
 			z.name: z for z in
-			federation.models.Zone.objects.filter(
-				Q(enabled = True) & Q(master = this_server)
-			)
+			federation.models.Zone.get_master_zones()
 		}
 		# Federated zones where we are a slave
-		slave_zones = federation.models.Zone.objects.filter(
-			Q(enabled = True) & (
-				Q(slaves = this_server) |
-				(Q(slaves_all = True) & ~Q(master = this_server))
-			)
-		)
+		slave_zones = federation.models.Zone.get_slave_zones()
 
 		for mz in master_zones:
 			mz.slaves = self.get_slaves_for_zone(mz, fed_master_zones, fed_slaves)
