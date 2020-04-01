@@ -8,10 +8,6 @@ class Zone(models.Model):
 		max_length = 255,
 		unique = True,
 	)
-	enabled = models.BooleanField(
-		default = True,
-		verbose_name = "Zone is enabled",
-	)
 	admins = models.ManyToManyField(User,
 		verbose_name = "Admin users",
 		help_text = "Users that may modify this zones records.",

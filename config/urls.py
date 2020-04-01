@@ -12,13 +12,13 @@ urlpatterns = [
 		)),
 		name='index'
 	),
-	path('zone',
+	path('zones',
 		login_required(
 			ListView.as_view(model = models.Zone)
 		),
 		name = 'zone-list',
 	),
-	path('zone/create', 
+	path('zones/create', 
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Zone,
@@ -28,13 +28,13 @@ urlpatterns = [
 		),
 		name = 'zone-create',
 	),
-	path('zone/<int:pk>',
+	path('zones/<int:pk>',
 		login_required(
 			views.ZoneDetailView.as_view()
 		),
 		name = 'zone-detail',
 	),
-	path('zone/<int:pk>/edit', 
+	path('zones/<int:pk>/edit', 
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Zone,
@@ -44,25 +44,7 @@ urlpatterns = [
 		),
 		name = 'zone-edit',
 	),
-	path('zone/<int:pk>/disable',
-		login_required(
-			DisableView.as_view(
-				model = models.Zone,
-				redirect_url = reverse_lazy('zone-list')
-			)
-		),
-		name = 'zone-disable',
-	),
-	path('zone/<int:pk>/enable',
-		login_required(
-			EnableView.as_view(
-				model = models.Zone,
-				redirect_url = reverse_lazy('zone-list')
-			)
-		),
-		name = 'zone-enable',
-	),
-	path('zone/<int:pk>/delete', 
+	path('zones/<int:pk>/delete', 
 		login_required(
 			CrispyDeleteView.as_view(
 				model = models.Zone,

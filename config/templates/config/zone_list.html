@@ -15,15 +15,10 @@
 		</tr>
 	</thead>
 {% for zone in object_list %}
-	<tr{% if not zone.enabled %} class="table-secondary"{% endif %}>
-		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
+	<tr>
+		<th><a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
 		<td>{% for u in zone.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</td>
 		<td>
-			{% if zone.enabled %}
-				<a class="btn btn-sm btn-secondary" href="{% url 'zone-disable' zone.pk %}">{% fa5_icon 'ban' %} disable</a>
-			{% else %}
-				<a class="btn btn-sm btn-primary" href="{% url 'zone-enable' zone.pk %}">{% fa5_icon 'check' %} enable</a>
-			{% endif %}
 			<a class="btn btn-sm btn-primary" href="{% url 'zone-edit' zone.pk %}">{% fa5_icon 'edit' %} edit</a>
 			<a class="btn btn-sm btn-primary" href="{% url 'zone-delete' zone.pk %}">{% fa5_icon 'trash' %} delete</a>
 		</td>

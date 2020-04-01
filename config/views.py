@@ -104,7 +104,7 @@ class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, ed
 		# All other servers as a federation.models.Server
 		fed_slaves = federation.models.Server.get_other_servers()
 		# Local zones
-		master_zones = models.Zone.objects.filter(enabled = True)
+		master_zones = models.Zone.objects.filter()
 		# Federated zones where we are the master
 		fed_master_zones = {
 			z.name: z for z in
