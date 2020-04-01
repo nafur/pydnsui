@@ -3,7 +3,16 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+{% if form.rname.initial %}
+<h1>Change {{ form.rname.initial }}</h1>
+{% else %}
 <h1>New record</h1>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger"><pre>{{ error }}</pre></div>
+{% endif %}
 
 {% crispy form form_helper %}
 

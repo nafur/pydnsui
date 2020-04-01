@@ -4,14 +4,12 @@
 {% load helpers %}
 
 {% block content %}
-<a class="btn btn-primary float-right" href="{% url 'deploy' %}">{% fa5_icon 'upload' %} Deploy</a>
 <h1>Local zones</h1>
 
 <table class="table">
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th># Records</th>
 			<th>Admins</th>
 			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'zone-create' %}">{% fa5_icon 'plus' %} New zone</a></th>
 		</tr>
@@ -19,7 +17,6 @@
 {% for zone in object_list %}
 	<tr{% if not zone.enabled %} class="table-secondary"{% endif %}>
 		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
-		<td>{{ zone.records.count }}</td>
 		<td>{% for u in zone.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</td>
 		<td>
 			{% if zone.enabled %}

@@ -1,38 +1,92 @@
+from django import forms
 from django.conf import settings
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import *
-from django.views.generic import base, edit
+from django.views.generic import base, detail, edit
 
 from pydnsui.views import *
-from . import forms, models
+from . import forms as models
 import federation
-import subprocess
 
-def index(request):
-	return HttpResponse("Hello, world. You're at the config index.")
+import dns
 
-class RecordCreateView(CrispyCreateView):
-	model = models.Record
-	fields = ['rname', 'rttl', 'rclass', 'rtype', 'rdata']
+from config.forms import *
+from config import dnsutils
+
+class ZoneDetailView(DetailView):
+	model = models.Zone
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['records'] = dnsutils.get_zone_records(settings.SERVER_NAME, self.get_object().name)
+		return context
+
+class RecordCreateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
+	form_class = RecordForm
+	form_submit_text = 'Submit'
+	template_name = 'config/record_form.html'
+	
+	def get_success_url(self):
+		return reverse_lazy('zone-detail', kwargs = {'pk': self.kwargs['zone']})
 
 	def form_valid(self, form):
-		print(self.kwargs)
-		form.instance.zone = models.Zone.objects.get(pk = self.kwargs['zone'])
+		if form.is_valid():
+			zone = models.Zone.objects.get(pk = self.kwargs['zone'])
+			u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+			u.add(form.cleaned_data)
+			u.send()
 		return super(RecordCreateView, self).form_valid(form)
 
-class RecordDeleteView(DeleteView):
-	model = models.Record
+class RecordUpdateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
+	form_class = RecordForm
+	form_submit_text = 'Submit'
+	template_name = 'config/record_form.html'
+	
+	def get_success_url(self):
+		print("Was called!")
+		return reverse_lazy('zone-detail', kwargs = {'pk': self.kwargs['zone']})
+	
+	def get_initial(self):
+		initial = super(RecordUpdateView, self).get_initial()
+		initial.update(dnsutils.unserialize(self.kwargs['serialized']))
+		return initial
+	
+	def post(self, request, *args, **kwargs):
+		form = self.get_form()
+		if form.is_valid():
+			zone = models.Zone.objects.get(pk = self.kwargs['zone'])
+			u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+			u.delete(dnsutils.unserialize(self.kwargs['serialized']))
+			u.add(form.cleaned_data)
+			response = u.send()
+			if response.rcode() == dns.rcode.NOERROR:
+				return self.form_valid(form)
+		return self.render_to_response(self.get_context_data(form = form, error = response))
 
-	def get_success_url(self, **kwargs):
-		return reverse('zone-detail', kwargs = self.kwargs)
+class RecordDeleteView(base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
+	form_class = forms.Form
+	template_name = 'config/record_confirm_delete.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['record'] = dnsutils.unserialize(self.kwargs['serialized'])
+		return context
+
+	def post(self, request, *args, **kwargs):
+		zone = models.Zone.objects.get(pk = self.kwargs['zone'])
+		u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+		u.delete(dnsutils.unserialize(self.kwargs['serialized']))
+		u.send()
+		return HttpResponseRedirect(reverse('zone-detail', kwargs = {'pk': self.kwargs['zone']}))
 
 class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
-	form_class = forms.DeployForm
+	form_class = forms.Form
 	template_name = 'config/deploy_form.html'
 	success_url = reverse_lazy('zone-list')
 

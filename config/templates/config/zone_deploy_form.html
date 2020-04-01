@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Sync zone</h1>
+
+{% for c in commands %}
+{{ c }}
+{% endfor %}
+{% if error %}
+<div class="alert alert-danger">
+	<pre>{{ error }}</pre>
+</div>
+<a class="btn btn-primary" href="{% url 'zone-list' %}">back to zones</a>
+{% else %}
+{% for r in records %}
+{{ r.render }}<br />
+{% endfor %}
+
+{% crispy form form_helper %}
+{% endif %}
+
+{% endblock %}

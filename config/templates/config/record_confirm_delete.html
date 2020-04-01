@@ -7,8 +7,9 @@
 
 <form method="POST">
 	{% csrf_token %}
-	Do you really want to remove {{ object.name }}? <br />
-	{{form.as_p}}
+	Do you really want to remove the following record? 
+	<div class="card card-body"><code>{{ record.rname }} {{ record.rttl }} {{ record.rclass }} {{ record.rtype }} {{ record.rdata }}</code></div>
+	
 	<div class="form-actions">
 		<button type="Submit" class="btn btn-danger">Delete</button>
 	</div>

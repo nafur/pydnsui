@@ -5,14 +5,16 @@
 {% block content %}
 <h1>Zone {{ object.name }}</h1>
 
-<dl>
-	<dt>Name</dt>
-	<dd>{{ object.name }}</dd>
-	<dt>Enabled</dt>
-	<dd>{% if object.enabled %}Yes{% else %}No{% endif %}</dd>
-	<dt>Admins</dt>
-	<dd>{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
-</dl>
+<div class="card">
+<div class="row card-body">
+	<div class="col">
+		Zone is {% if object.enabled %}enabled{% else %}disabled{% endif %},
+		admin users:
+		{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
+	</div>
+</div>
+</div>
+<br />
 
 <table class="table">
 	<thead>
@@ -22,10 +24,14 @@
 			<th>Class</th>
 			<th>Type</th>
 			<th>Data</th>
-			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'record-create' zone.pk %}">{% fa5_icon 'plus' %} New record</a></th>
+			<th>
+				<div class="float-right">
+					<a class="btn btn-sm btn-primary" href="{% url 'record-create' zone.pk %}">{% fa5_icon 'plus' %} new record</a>
+				</div>
+			</th>
 		</tr>
 	</thead>
-{% for record in object.records.all %}
+{% for record in records %}
 	<tr>
 		<th>{{ record.rname }}</th>
 		<td>{{ record.rttl }}</td>
@@ -33,8 +39,8 @@
 		<td>{{ record.rtype }}</td>
 		<td>{{ record.rdata }}</td>
 		<td>
-			<a class="btn btn-sm btn-primary" href="{% url 'record-edit' record.pk %}">{% fa5_icon 'edit' %} edit</a>
-			<a class="btn btn-sm btn-primary" href="{% url 'record-delete' record.pk %}">{% fa5_icon 'trash' %} delete</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'record-delete' zone.pk record.serialized %}">{% fa5_icon 'trash' %} delete</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'record-edit' zone.pk record.serialized %}">{% fa5_icon 'edit' %} edit</a>
 		</td>
 	</tr>
 {% endfor %}

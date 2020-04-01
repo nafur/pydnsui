@@ -30,7 +30,7 @@ urlpatterns = [
 	),
 	path('zone/<int:pk>',
 		login_required(
-			DetailView.as_view(model = models.Zone)
+			views.ZoneDetailView.as_view()
 		),
 		name = 'zone-detail',
 	),
@@ -73,32 +73,20 @@ urlpatterns = [
 	),
 	path('record/<int:zone>/create',
 		login_required(
-			views.RecordCreateView.as_view(
-				form_submit_text = 'Submit',
-			)
+			views.RecordCreateView.as_view()
 		),
 		name = 'record-create',
 	),
-	path('record/<int:pk>/edit', 
+	path('record/<int:zone>/edit/<str:serialized>', 
 		login_required(
-			CrispyUpdateView.as_view(
-				model = models.Record,
-				fields = ['rname', 'rttl', 'rclass', 'rtype', 'rdata'],
-				form_submit_text = 'Submit',
-			)
+			views.RecordUpdateView.as_view()
 		),
 		name = 'record-edit',
 	),
-	path('record/<int:pk>/delete', 
+	path('record/<int:zone>/delete/<str:serialized>', 
 		login_required(
 			views.RecordDeleteView.as_view()
 		),
 		name = 'record-delete',
 	),
-	path('deploy',
-		login_required(
-			views.DeployView.as_view()
-		),
-		name = 'deploy',
-	)
 ]
