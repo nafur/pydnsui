@@ -11,13 +11,13 @@
 		<tr>
 			<th>Name</th>
 			<th>Pull URL</th>
-			<th>Pulled server</th>
+			<th>Pull for servers</th>
 			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:server-create' %}">{% fa5_icon 'plus' %} New server</a></th>
 		</tr>
 	</thead>
 {% for server in object_list %}
 	<tr{% if not server.enabled %} class="table-secondary"{% endif %}>
-		<th>{% enabled_icon server %} <a href="{{ server.get_absolute_url }}">{% if server.is_this_server %}{% fa5_icon 'home' %}{% endif %} {{ server.name }}</a></th>
+		<th>{% enabled_icon server %} <a href="{{ server.get_absolute_url }}">{% if server.configured_here %}{% fa5_icon 'home' %}{% endif %} {{ server.name }}</a></th>
 		<td {% if not server.pull_enabled %}class="table-secondary"{% endif %}>
 			{% enabled_icon server 'pull_enabled' %}
 			{% if server.is_pull_recent %}

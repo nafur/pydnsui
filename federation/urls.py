@@ -17,7 +17,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
+				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -33,7 +33,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
+				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
 				form_submit_text = 'Submit',
 			)
 		),

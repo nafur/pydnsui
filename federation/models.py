@@ -16,6 +16,10 @@ class Server(models.Model):
 		default = True,
 		verbose_name = "Zone is enabled",
 	)
+	configured_here = models.BooleanField(
+		default = True,
+		verbose_name = "Zones for this server are configured here.",
+	)
 	admins = models.ManyToManyField(User,
 		verbose_name = "Admin users",
 		help_text = "Users that may modify this server.",
@@ -41,6 +45,7 @@ class Server(models.Model):
 	pull_servers = models.ManyToManyField(
 		'self',
 		blank = True,
+		symmetrical = False,
 		verbose_name = "servers to pull from here",
 		related_name = "servers",
 	)

@@ -8,6 +8,8 @@
 	<dd>{{ object.name }}</dd>
 	<dt>Enabled</dt>
 	<dd>{{ object.enabled }}</dd>
+	<dt>Configured here</dt>
+	<dd>{{ object.configured_here }}</dd>
 	<dt>Admins</dt>
 	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
 	<dt>Pull</dt>
