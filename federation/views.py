@@ -21,21 +21,47 @@ class ExportZonesView(View):
 	http_method_names = ['post']
 
 	def post(self, request, *args, **kwargs):
+		"""
+		Use server and token for authorization.
+		Export all zones that
+		- are enabled
+		- belong to a server configured here
+		- have one of the given slaves
+		"""
 		try:
-			server = models.Server.objects.get(auth_token = request.POST['token'])
-		except:
+			server = models.Server.objects.get(name = request.POST['server'], auth_token = request.POST['token'])
+			slaves = request.POST.getlist('slaves')
+		except Exception as e:
+			print(e)
 			return HttpResponse('Invalid token', status = 401)
+		print("Exporting zones for pulling server {} and slaves {}".format(server.name, slaves))
 		zones = models.Zone.objects.filter(
-			~Q(master = server) & Q(enabled = True) & (Q(slaves_all = True) | Q(slaves = server))
+			Q(enabled = True) &
+			Q(master__configured_here = True) & (
+				Q(slaves_all = True) | Q(slaves__name__in = slaves)
+			)
 		)
-		res = []
+		res = {
+			'zones': [],
+			'server': {},
+		}
+		servers = set()
 		for z in zones:
-			res.append({
+			res['zones'].append({
 				"name": z.name,
 				"master": z.master.name,
 				"slaves_all": z.slaves_all,
 				"slaves": list(map(lambda s: s.name, z.slaves.all())),
 			})
+			servers.add(z.master)
+			for s in z.slaves.all():
+				servers.add(s)
+		for s in servers:
+			res['server'][s.name] = {
+				'ipv4': s.ipv4,
+				'ipv6': s.ipv6,
+				'nameserver': s.nameserver,
+			}
 		return JsonResponse(res, safe = False)
 
 class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
@@ -47,33 +73,77 @@ class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateRes
 
 	def download_from_server(self):
 		server = self.get_object()
-		data = urllib.parse.urlencode({"token": server.pull_token}).encode("utf8")
+		slaves = models.Server.objects.filter(configured_here = True, enabled = True)
+		data = urllib.parse.urlencode({
+			'server': server.name, 
+			'token': server.pull_token,
+			'slaves': [s.name for s in slaves],
+		}, True).encode("utf8")
+		print("Queried {} with {}".format(server.pull_url, data))
 		u = urllib.request.urlopen(server.pull_url, data = data)
-		return json.loads(u.read().decode('utf8'))
+		res = json.loads(u.read().decode('utf8'))
+		print("Got {}".format(res))
+		return res
+	
+	def postprocess_data(self, data):
+		missing_server = []
+		for s in data['server']:
+			s = self.get_or_create_server(s)
+			if not s.pk:
+				s.ipv4 = data['server'][s.name]['ipv4']
+				s.ipv6 = data['server'][s.name]['ipv6']
+				s.nameserver = data['server'][s.name]['nameserver']
+				s.configured_here = False
+				s.pull_enabled = False
+				missing_server.append(s)
+			data['server'][s.name] = s
+		zones = []
+		for zone in data['zones']:
+			zone['master'] = data['server'][zone['master']]
+			zone['slaves'] = list(map(lambda s: data['server'][s], zone['slaves']))
+			zones.append(zone)
+		return (zones, missing_server)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		try:
-			context['data'] = self.download_from_server()
+			data = self.download_from_server()
+			zones, missing = self.postprocess_data(data)
+			context['missing'] = missing
+			context['server'] = self.get_object()
+			context['zones'] = zones
 		except urllib.request.HTTPError as e:
 			context['error'] = e
 		return context
 	
-	def get_or_create_server(self, name):
+	def get_or_create_server(self, name, save = False):
 		try:
 			return models.Server.objects.get(name = name)
 		except:
 			s = models.Server(name = name)
-			s.save()
+			if save:
+				s.save()
 			return s
 
 	def post(self, request, *args, **kwargs):
 		context = super().get_context_data(**kwargs)
-		zones = self.download_from_server()
-		print(zones)
+		data = self.download_from_server()
+		zones, missing = self.postprocess_data(data)
+		for m in missing:
+			m.save()
 		for zone in zones:
-			master = self.get_or_create_server(zone['master'])
-			z = models.Zone.objects.filter(master = master, name = zone['name'])
+			try:
+				z = models.Zone.objects.get(name = zone['name'])
+			except models.Zone.DoesNotExist as e:
+				z = models.Zone(
+					name = zone['name'],
+					master = zone['master'],
+					slaves_all = zone['slaves_all']
+				)
+				z.save()
+				z.slaves.set(zone['slaves'])
+			continue
+			z = models.Zone.objects.filter(master = zone['master'], name = zone['name'])
 			if not z:
 				print("New zone")
 				z = models.Zone(master = master, name = zone['name'])

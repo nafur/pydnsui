@@ -17,7 +17,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
+				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6', 'nameserver'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -33,11 +33,20 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6'],
+				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6', 'nameserver'],
 				form_submit_text = 'Submit',
 			)
 		),
 		name = 'server-edit',
+	),
+	path('server/<int:pk>/delete',
+		login_required(
+			CrispyDeleteView.as_view(
+				model = models.Server,
+				success_url = reverse_lazy('fed:server-list'),
+			)
+		),
+		name = 'server-delete',
 	),
 	path('server/<int:pk>/disable',
 		login_required(
@@ -76,6 +85,12 @@ urlpatterns = [
 			)
 		),
 		name = 'server-enable-pull',
+	),
+	path('server/<int:pk>/pull',
+		login_required(
+			views.PullManualView.as_view()
+		),
+		name = 'server-pull',
 	),
 	path('zone',
 		login_required(
@@ -135,10 +150,4 @@ urlpatterns = [
 		views.ExportZonesView.as_view(),
 		name = 'export-zones',
 	),
-	path('pull/<int:pk>',
-		login_required(
-			views.PullManualView.as_view()
-		),
-		name = 'pull',
-	)
 ]

@@ -39,7 +39,9 @@
 			{% else %}
 				<a class="btn btn-sm btn-primary" href="{% url 'fed:server-enable-pull' server.pk %}">{% fa5_icon 'check' %} enable pull</a>
 			{% endif %}
+			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-delete' server.pk %}">{% fa5_icon 'trash' %} delete</a>
 			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-edit' server.pk %}">{% fa5_icon 'edit' %} edit</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-pull' server.pk %}">{% fa5_icon 'cloud-download-alt' %} pull</a>
 		</td>
 	</tr>
 {% endfor %}

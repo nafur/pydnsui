@@ -17,7 +17,7 @@
 	</thead>
 {% for zone in object_list %}
 	<tr{% if not zone.enabled %} class="table-secondary"{% endif %}>
-		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
+		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{% if zone.master.configured_here %}{% fa5_icon 'home' %}{% endif %} {{ zone.name }}</a></th>
 		<td><a href="{{ zone.master.get_absolute_url }}">{{ zone.master.name }}</a></td>
 		<td>
 			{% if zone.slaves_all %}{% fa5_icon 'globe' title='use all' %}{% endif %}

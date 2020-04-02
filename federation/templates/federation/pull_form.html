@@ -1,19 +1,63 @@
 {% extends "base.html" %}
 
 {% load crispy_forms_tags %}
+{% load fontawesome_5 %}
 
 {% block content %}
-<h1>Pull from {{ object.name }}</h1>
 
 {% if error %}
+<h1>Error while pulling from {{ server.name }}</h1>
 <div class="alert alert-danger">
 	<pre>{{ error }}</pre>
 </div>
-{% endif %}
-{% if data %}
-<pre>{{ data }}</pre>
-{% endif %}
+{% else %}
+<h1>Pull from {{ server.name }}</h1>
+
+{% for m in missing %}
+<div class="card-columns">
+	<div class="card alert-warning">
+		<div class="card-body">
+			<h5 class="card-title">Missing server <code>{{ m.name }}</code></h5>
+			<p class="card-text">
+				The server <code>{{ m.name }}</code> is not yet configured locally.
+				If you pull this data, it will be created automatically with the following configuration obtained from <code>{{ server.name }}</code>:
+				<br />
+				IPv4: <code>{{ m.ipv4 }}</code>,
+				IPv6: <code>{{ m.ipv6 }}</code>,
+				Nameserver: <code>{{ m.nameserver }}</code>
+			</p>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
+<div class="card-columns">
+{% for zone in zones %}
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">{{ zone.name }}</h5>
+			<p class="card-text">
+				Master:
+				{% if zone.master.pk %}
+					<a href="{% url 'fed:server-detail' zone.master.pk %}"><span class="badge badge-secondary">{{ zone.master.name }}</span></a>
+				{% else %}
+					<span class="badge badge-secondary">{{ zone.master.name }}</span>
+				{% endif %},
+				Slaves: {% if zone.slaves_all %}{% fa5_icon 'globe' title='use all' %}{% endif %}
+				{% for s in zone.slaves %}
+					{% if s.pk %}
+						<a href="{% url 'fed:server-detail' s.pk %}"><span class="badge badge-secondary">{{ s.name }}</span></a>
+					{% else %}
+						<span class="badge badge-secondary">{{ s.name }}</span>
+					{% endif %}
+				{% endfor %}
+			</p>
+		</div>
+	</div>
+{% endfor %}
+</div>
 
 {% crispy form form_helper %}
+{% endif %}
 
 {% endblock %}

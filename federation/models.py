@@ -14,57 +14,67 @@ class Server(models.Model):
 	)
 	enabled = models.BooleanField(
 		default = True,
-		verbose_name = "Zone is enabled",
+		verbose_name = "Server is enabled",
 	)
 	configured_here = models.BooleanField(
 		default = True,
 		verbose_name = "Zones for this server are configured here.",
+		help_text = "Only zones of server configured here are made available to other servers that pull zone information.",
 	)
 	admins = models.ManyToManyField(User,
 		verbose_name = "Admin users",
-		help_text = "Users that may modify this server.",
+		help_text = "Local users that may modify this server.",
 	)
 	auth_token = models.CharField(
 		max_length = 255,
-		default = "",
-		verbose_name = "Authorization token",
-	)
-	pull_url = models.URLField(
 		blank = True,
-		help_text = "URL where to pull the information.",
+		verbose_name = "Authorization token",
+		help_text = "The token this server should use for pulling zone information.",
 	)
 	pull_enabled = models.BooleanField(
 		default = True,
 		verbose_name = "Pull is enabled",
+		help_text = "Whether we attempt to pull zone information from this server.",
+	)
+	pull_url = models.URLField(
+		blank = True,
+		verbose_name = "Pull URL",
+		help_text = "URL to pull zone information from this server.",
 	)
 	pull_token = models.CharField(
 		blank = True,
 		max_length = 255,
-		verbose_name = "Token",
+		verbose_name = "Pull Token",
+		help_text = "The token used for pulling zone information, should correspond to the authorization token on the other server.",
 	)
 	pull_servers = models.ManyToManyField(
 		'self',
 		blank = True,
 		symmetrical = False,
-		verbose_name = "servers to pull from here",
+		verbose_name = "Servers to pull",
 		related_name = "servers",
+		help_text = "The servers whose information we pull from this server. Should correspond to what this server considers as \"configured here\".",
 	)
 	pull_last = models.DateTimeField(
 		blank = True,
 		null = True,
-		help_text = "Last pull from this server"
+		verbose_name = "Last pull",
+		help_text = "Last successful pull from this server"
 	)
 	ipv4 = models.GenericIPAddressField(
 		protocol = 'IPv4',
 		verbose_name = "IPv4 address",
+		help_text = "IPv4 address of the nameserver for the bind query settings.",
 	)
 	ipv6 = models.GenericIPAddressField(
 		protocol = 'IPv6',
 		verbose_name = "IPv6 address",
+		help_text = "IPv6 address of the nameserver for the bind query settings.",
 	)
 	nameserver = models.CharField(
 		max_length = 255,
-		help_text = "FQDN of the nameserver",
+		verbose_name = "Nameserver",
+		help_text = "Proper FQDN of the nameserver for the NS entries.",
 	)
 
 	def __str__(self):
