@@ -1,31 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Federation server {{ object.name }}</h1>
+<h1>Federation::Server {{ object.name }}</h1>
 
 <dl>
 	<dt>Name</dt>
 	<dd>{{ object.name }}</dd>
 	<dt>Enabled</dt>
 	<dd>{{ object.enabled }}</dd>
+	{% if object.remote %}
+	<dt>Remote</dt>
+	<dd><a href="{{ object.remote.get_absolute_url }}"><span class="badge badge-light">{{ object.remote.name }}</span></a></dd>
+	{% else %}
 	<dt>Configured here</dt>
-	<dd>{{ object.configured_here }}</dd>
-	<dt>Admins</dt>
-	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
-	<dt>Pull</dt>
-	<dd>{% if object.pull_enabled %}Enabled{% else %}Disabled{% endif %} from <code>{{ object.pull_url }}</code></dd>
-	<dt>Last pull</dt>
-	<dd>{{ object.last_push|date:'%d.%m.%Y %H:%M' }}</dd>
-	<dt>Pull token</dt>
-	<dd><code>{{ object.pull_token }}</code></dd>
-	<dt>Pull other servers</dt>
-	<dd>{% for s in server.pull_servers.all %}<span class="badge badge-secondary">{{ s.name }}</span>{% endfor %}</dd>
+	{% endif %}
 	<dt>IPv4 address</dt>
-	<dd>{{ object.ipv4 }}</dd>
+	<dd><code>{{ object.ipv4 }}</code></dd>
 	<dt>IPv6 address</dt>
-	<dd>{{ object.ipv6 }}</dd>
+	<dd><code>{{ object.ipv6 }}</code></dd>
 	<dt>Nameserver</dt>
-	<dd>{{ object.nameserver }}</dd>
+	<dd><code>{{ object.nameserver }}</code></dd>
 	<dt>Master zones</dt>
 	<dd>
 		{% for record in object.zones_master.all %}

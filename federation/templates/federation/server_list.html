@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% load fontawesome_5 %}
-{% load helpers %}
+{% load server_list %}
 
 {% block content %}
 <h1>Federation::Server</h1>
@@ -10,40 +10,24 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Pull URL</th>
-			<th>Pull for servers</th>
+			<th>IPv4</th>
+			<th>IPv6</th>
+			<th>Nameserver</th>
 			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:server-create' %}">{% fa5_icon 'plus' %} New server</a></th>
 		</tr>
 	</thead>
 {% for server in object_list %}
-	<tr{% if not server.enabled %} class="table-secondary"{% endif %}>
-		<th>{% enabled_icon server %} <a href="{{ server.get_absolute_url }}">{% if server.configured_here %}{% fa5_icon 'home' %}{% endif %} {{ server.name }}</a></th>
-		<td {% if not server.pull_enabled %}class="table-secondary"{% endif %}>
-			{% enabled_icon server 'pull_enabled' %}
-			{% if server.is_pull_recent %}
-				{% fa5_icon 'cloud-download-alt' color='green' %}
-			{% else %}
-				{% fa5_icon 'cloud-download-alt' color='red' %}
-			{% endif %}
-			<code>{{ server.pull_url }}</code>
-		</td>
-		<td>{% for s in server.pull_servers.all %}<span class="badge badge-secondary">{{ s.name}}</span> {% endfor %}</td>
-		<td>
-			{% if server.enabled %}
-				<a class="btn btn-sm btn-secondary" href="{% url 'fed:server-disable' server.pk %}">{% fa5_icon 'ban' %} disable</a>
-			{% else %}
-				<a class="btn btn-sm btn-primary" href="{% url 'fed:server-enable' server.pk %}">{% fa5_icon 'check' %} enable</a>
-			{% endif %}
-			{% if server.pull_enabled %}
-				<a class="btn btn-sm btn-secondary" href="{% url 'fed:server-disable-pull' server.pk %}">{% fa5_icon 'ban' %} disable pull</a>
-			{% else %}
-				<a class="btn btn-sm btn-primary" href="{% url 'fed:server-enable-pull' server.pk %}">{% fa5_icon 'check' %} enable pull</a>
-			{% endif %}
-			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-delete' server.pk %}">{% fa5_icon 'trash' %} delete</a>
-			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-edit' server.pk %}">{% fa5_icon 'edit' %} edit</a>
-			<a class="btn btn-sm btn-primary" href="{% url 'fed:server-pull' server.pk %}">{% fa5_icon 'cloud-download-alt' %} pull</a>
-		</td>
-	</tr>
+	{% server_row server True %}
+{% endfor %}
+	<thead>
+		<tr>
+			<th colspan="5">
+				Remotely configured servers
+			</th>
+		</tr>
+	</thead>
+{% for server in object_list %}
+	{% server_row server False %}
 {% endfor %}
 </table>
 

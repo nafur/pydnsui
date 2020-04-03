@@ -1,65 +1,77 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 from django.urls import reverse
 
 from datetime import datetime
 
-class Server(models.Model):
+class Remote(models.Model):
 	name = models.CharField(
 		max_length = 255,
 		unique = True,
-		help_text = "Unique identifier for this server. Maybe the FQDN?",
+		help_text = "Unique identifier for this remote. Maybe the FQDN?",
 	)
 	enabled = models.BooleanField(
 		default = True,
-		verbose_name = "Server is enabled",
-	)
-	configured_here = models.BooleanField(
-		default = True,
-		verbose_name = "Zones for this server are configured here.",
-		help_text = "Only zones of server configured here are made available to other servers that pull zone information.",
+		verbose_name = "Remote is enabled",
 	)
 	admins = models.ManyToManyField(User,
 		verbose_name = "Admin users",
-		help_text = "Local users that may modify this server.",
+		help_text = "Local users that may modify this remote.",
 	)
 	auth_token = models.CharField(
 		max_length = 255,
 		blank = True,
+		unique = True,
 		verbose_name = "Authorization token",
-		help_text = "The token this server should use for pulling zone information.",
-	)
-	pull_enabled = models.BooleanField(
-		default = True,
-		verbose_name = "Pull is enabled",
-		help_text = "Whether we attempt to pull zone information from this server.",
+		help_text = "The token this remote should use for pulling zone information.",
 	)
 	pull_url = models.URLField(
 		blank = True,
 		verbose_name = "Pull URL",
-		help_text = "URL to pull zone information from this server.",
+		help_text = "URL to pull zone information from this remote.",
 	)
 	pull_token = models.CharField(
 		blank = True,
 		max_length = 255,
 		verbose_name = "Pull Token",
-		help_text = "The token used for pulling zone information, should correspond to the authorization token on the other server.",
-	)
-	pull_servers = models.ManyToManyField(
-		'self',
-		blank = True,
-		symmetrical = False,
-		verbose_name = "Servers to pull",
-		related_name = "servers",
-		help_text = "The servers whose information we pull from this server. Should correspond to what this server considers as \"configured here\".",
+		help_text = "The token used for pulling zone information, should correspond to the authorization token on this remote.",
 	)
 	pull_last = models.DateTimeField(
 		blank = True,
 		null = True,
 		verbose_name = "Last pull",
-		help_text = "Last successful pull from this server"
+		help_text = "Last successful pull from this remote."
+	)
+	def get_absolute_url(self):
+		return reverse('fed:remote-detail', kwargs = {
+			'pk': self.pk,
+		})
+	def is_pull_recent(self):
+		if self.pull_last is None:
+			return False
+		return self.pull_last > datetime.now() - datetime.hour(1)
+
+
+class Server(models.Model):
+	class Meta:
+		ordering = [F('remote').asc(nulls_last = False), 'name']
+	name = models.CharField(
+		max_length = 255,
+		unique = True,
+		help_text = "Unique identifier for this server. Maybe the FQDN?",
+	)
+	remote = models.ForeignKey(
+		Remote,
+		null = True,
+		on_delete = models.CASCADE,
+		verbose_name = "Responsible remote",
+		help_text = "Remote that introduced this server",
+	)
+	enabled = models.BooleanField(
+		default = True,
+		verbose_name = "Server is enabled",
 	)
 	ipv4 = models.GenericIPAddressField(
 		protocol = 'IPv4',
@@ -85,14 +97,6 @@ class Server(models.Model):
 		})
 	def is_this_server(self):
 		return settings.SERVER_NAME == self.name
-	def is_push_recent(self):
-		if self.last_push is None:
-			return False
-		return self.last_push > datetime.now() - datetime.hour(1)
-	def is_receive_recent(self):
-		if self.last_received is None:
-			return False
-		return self.last_received > datetime.now() - datetime.hour(1)
 	@staticmethod
 	def get_this_server():
 		return Server.objects.get(name = settings.SERVER_NAME)

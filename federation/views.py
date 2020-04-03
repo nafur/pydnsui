@@ -25,19 +25,20 @@ class ExportZonesView(View):
 		Use server and token for authorization.
 		Export all zones that
 		- are enabled
-		- belong to a server configured here
+		- belong to a server configured locally
 		- have one of the given slaves
 		"""
 		try:
-			server = models.Server.objects.get(name = request.POST['server'], auth_token = request.POST['token'])
+			print("Looking for remote {} with token {}".format(request.POST['remote'], request.POST['token']))
+			remote = models.Remote.objects.get(auth_token = request.POST['token'])
 			slaves = request.POST.getlist('slaves')
 		except Exception as e:
 			print(e)
 			return HttpResponse('Invalid token', status = 401)
-		print("Exporting zones for pulling server {} and slaves {}".format(server.name, slaves))
+		print("Exporting zones for pulling server {} and slaves {}".format(remote.name, slaves))
 		zones = models.Zone.objects.filter(
 			Q(enabled = True) &
-			Q(master__configured_here = True) & (
+			Q(master__remote = None) & (
 				Q(slaves_all = True) | Q(slaves__name__in = slaves)
 			)
 		)
@@ -66,21 +67,21 @@ class ExportZonesView(View):
 
 class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
 	form_class = forms.Form
-	model = models.Server
+	model = models.Remote
 	object = None
 	template_name = 'federation/pull_form.html'
-	success_url = reverse_lazy('fed:server-list')
+	success_url = reverse_lazy('fed:remote-list')
 
-	def download_from_server(self):
-		server = self.get_object()
-		slaves = models.Server.objects.filter(configured_here = True, enabled = True)
+	def download_from_remote(self):
+		remote = self.get_object()
+		slaves = models.Server.objects.filter(remote = None, enabled = True)
 		data = urllib.parse.urlencode({
-			'server': server.name, 
-			'token': server.pull_token,
+			'remote': remote.name, 
+			'token': remote.pull_token,
 			'slaves': [s.name for s in slaves],
 		}, True).encode("utf8")
-		print("Queried {} with {}".format(server.pull_url, data))
-		u = urllib.request.urlopen(server.pull_url, data = data)
+		print("Queried {} with {}".format(remote.pull_url, data))
+		u = urllib.request.urlopen(remote.pull_url, data = data)
 		res = json.loads(u.read().decode('utf8'))
 		print("Got {}".format(res))
 		return res
@@ -93,8 +94,7 @@ class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateRes
 				s.ipv4 = data['server'][s.name]['ipv4']
 				s.ipv6 = data['server'][s.name]['ipv6']
 				s.nameserver = data['server'][s.name]['nameserver']
-				s.configured_here = False
-				s.pull_enabled = False
+				s.remote = self.get_object()
 				missing_server.append(s)
 			data['server'][s.name] = s
 		zones = []
@@ -107,7 +107,7 @@ class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateRes
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		try:
-			data = self.download_from_server()
+			data = self.download_from_remote()
 			zones, missing = self.postprocess_data(data)
 			context['missing'] = missing
 			context['server'] = self.get_object()
@@ -127,7 +127,7 @@ class PullManualView(detail.SingleObjectMixin, FormHelperMixin, base.TemplateRes
 
 	def post(self, request, *args, **kwargs):
 		context = super().get_context_data(**kwargs)
-		data = self.download_from_server()
+		data = self.download_from_remote()
 		zones, missing = self.postprocess_data(data)
 		for m in missing:
 			m.save()

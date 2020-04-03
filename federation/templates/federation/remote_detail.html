@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Federation::Remote {{ object.name }}</h1>
+
+<dl>
+	<dt>Name</dt>
+	<dd>{{ object.name }}</dd>
+	<dt>Enabled</dt>
+	<dd>{{ object.enabled }}</dd>
+	<dt>Admins</dt>
+	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
+	<dt>Authorization token</dt>
+	<dd><code>{{ object.auth_token }}</code></dd>
+	<dt>Pull</dt>
+	<dd><code>{{ object.pull_url }}</code></dd>
+	<dt>Pull token</dt>
+	<dd><code>{{ object.pull_token }}</code></dd>
+	<dt>Last pull</dt>
+	<dd>{{ object.last_push|date:'%d.%m.%Y %H:%M' }}</dd>
+	<dt>Associated servers</dt>
+	<dd>
+		{% for server in object.server_set.all %}
+			<a href="{{ server.get_absolute_url }}"><span class="badge badge-light">{{ server }}</span></a>
+		{% endfor %}
+	</dd>
+</dl>
+
+{% endblock %}

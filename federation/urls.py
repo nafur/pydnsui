@@ -7,6 +7,71 @@ from . import models, views
 
 app_name = 'fed'
 urlpatterns = [
+	path('remotes',
+		login_required(
+			ListView.as_view(model = models.Remote)
+		),
+		name = 'remote-list',
+	),
+	path('remotes/create',
+		login_required(
+			CrispyCreateView.as_view(
+				model = models.Remote,
+				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_token'],
+				form_submit_text = 'Submit',
+			)
+		),
+		name = 'remote-create',
+	),
+	path('remotes/<int:pk>',
+		login_required(
+			DetailView.as_view(model = models.Remote)
+		),
+		name = 'remote-detail',
+	),
+	path('remotes/<int:pk>/edit',
+		login_required(
+			CrispyUpdateView.as_view(
+				model = models.Remote,
+				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_token'],
+				form_submit_text = 'Submit',
+			)
+		),
+		name = 'remote-edit',
+	),
+	path('remotes/<int:pk>/delete',
+		login_required(
+			CrispyDeleteView.as_view(
+				model = models.Remote,
+				success_url = reverse_lazy('fed:remote-list'),
+			)
+		),
+		name = 'remote-delete',
+	),
+	path('remotes/<int:pk>/disable',
+		login_required(
+			DisableView.as_view(
+				model = models.Remote,
+				redirect_url = reverse_lazy('fed:remote-list')
+			)
+		),
+		name = 'remote-disable',
+	),
+	path('remotes/<int:pk>/enable',
+		login_required(
+			EnableView.as_view(
+				model = models.Remote,
+				redirect_url = reverse_lazy('fed:remote-list')
+			)
+		),
+		name = 'remote-enable',
+	),
+	path('remotes/<int:pk>/pull',
+		login_required(
+			views.PullManualView.as_view()
+		),
+		name = 'remote-pull',
+	),
 	path('server',
 		login_required(
 			ListView.as_view(model = models.Server)
@@ -17,7 +82,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6', 'nameserver'],
+				fields = [ 'name', 'enabled', 'ipv4', 'ipv6', 'nameserver'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -33,7 +98,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'configured_here', 'admins', 'auth_token', 'pull_url', 'pull_enabled', 'pull_token', 'pull_servers', 'ipv4', 'ipv6', 'nameserver'],
+				fields = [ 'name', 'enabled', 'ipv4', 'ipv6', 'nameserver'],
 				form_submit_text = 'Submit',
 			)
 		),
