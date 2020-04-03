@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import F, Q
 from django.urls import reverse
+from django.utils import timezone
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Remote(models.Model):
 	name = models.CharField(
@@ -44,6 +45,8 @@ class Remote(models.Model):
 		verbose_name = "Last pull",
 		help_text = "Last successful pull from this remote."
 	)
+	def __str__(self):
+		return self.name
 	def get_absolute_url(self):
 		return reverse('fed:remote-detail', kwargs = {
 			'pk': self.pk,
@@ -51,7 +54,7 @@ class Remote(models.Model):
 	def is_pull_recent(self):
 		if self.pull_last is None:
 			return False
-		return self.pull_last > datetime.now() - datetime.hour(1)
+		return self.pull_last > timezone.now() - timedelta(hours = 1)
 
 
 class Server(models.Model):

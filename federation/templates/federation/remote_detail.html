@@ -17,7 +17,7 @@
 	<dt>Pull token</dt>
 	<dd><code>{{ object.pull_token }}</code></dd>
 	<dt>Last pull</dt>
-	<dd>{{ object.last_push|date:'%d.%m.%Y %H:%M' }}</dd>
+	<dd>{{ object.pull_last|date:'%d.%m.%Y %H:%M' }}</dd>
 	<dt>Associated servers</dt>
 	<dd>
 		{% for server in object.server_set.all %}

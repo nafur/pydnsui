@@ -19,7 +19,7 @@
 		<th>{% enabled_icon remote %} <a href="{{ remote.get_absolute_url }}">{{ remote.name }}</a></th>
 		<td>
 			{% if remote.is_pull_recent %}
-				{% fa5_icon 'cloud-download-alt' color='green' %}
+				{% fa5_icon 'cloud-download-alt' color='green' title=remote.pull_last %}
 			{% else %}
 				{% fa5_icon 'cloud-download-alt' color='red' %}
 			{% endif %}

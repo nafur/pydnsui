@@ -13,8 +13,13 @@
 {% else %}
 <h1>Pull from {{ server.name }}</h1>
 
-{% for m in missing %}
+{% for w in warnings %}
+<div class="alert alert-warning">
+	<pre>{{ w }}</pre>
+</div>
+{% endfor %}
 <div class="card-columns">
+{% for m in missing %}
 	<div class="card alert-warning">
 		<div class="card-body">
 			<h5 class="card-title">Missing server <code>{{ m.name }}</code></h5>
@@ -28,8 +33,23 @@
 			</p>
 		</div>
 	</div>
-</div>
 {% endfor %}
+{% for m in modified %}
+	<div class="card alert-warning">
+		<div class="card-body">
+			<h5 class="card-title">Modified server <code>{{ m.0.name }}</code></h5>
+			<p class="card-text">
+				The server <code>{{ m.0.name }}</code> has been modified on the remote.
+				If you pull this data, it will be changed automatically to the following configuration obtained from <code>{{ server.name }}</code>:
+				<br />
+				IPv4: <code>{{ m.1.ipv4 }}</code> (was <code>{{ m.0.ipv4 }}</code>),
+				IPv6: <code>{{ m.1.ipv6 }}</code> (was <code>{{ m.0.ipv6 }}</code>),
+				Nameserver: <code>{{ m.1.nameserver }}</code> (was <code>{{ m.0.nameserver }}</code>)
+			</p>
+		</div>
+	</div>
+{% endfor %}
+</div>
 
 <div class="card-columns">
 {% for zone in zones %}
