@@ -17,5 +17,6 @@ Require all granted \n\
 EXPOSE	80
 
 ADD	. /usr/local/apache2/htdocs/
+COPY	settings_local.py /usr/local/apache2/htdocs/pydnsui/
 
 CMD	["apachectl", "-D", "FOREGROUND"]
