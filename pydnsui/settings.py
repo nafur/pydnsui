@@ -136,4 +136,4 @@ STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-from settings_local import *
+from pydnsui.settings_local import *
