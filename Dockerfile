@@ -1,7 +1,7 @@
 FROM	httpd:latest
  
 RUN	apt-get update && \
-	apt-get install -y python3-dev python3-pip && \
+	apt-get install -y libmysqlclient-dev python3-dev python3-pip && \
 	pip3 install Django django-crispy-forms django-fontawesome-5 dnspython mod_wsgi mysqlclient && \
 	echo "Include conf/extra/wsgi-express.conf" >> /usr/local/apache2/conf/httpd.conf && \
 	echo "Include conf/extra/wsgi-django.conf" >> /usr/local/apache2/conf/httpd.conf && \
