@@ -7,7 +7,7 @@ RUN	apt-get update && \
 	echo "Include conf/extra/wsgi-django.conf" >> /usr/local/apache2/conf/httpd.conf && \
 	mod_wsgi-express module-config >> /usr/local/apache2/conf/extra/wsgi-express.conf && \
 	echo "WSGIScriptAlias / /usr/local/apache2/htdocs/pydnsui/wsgi.py \n\
-WSGIPythonPath /usr/local/apache2/htdocs/pydnsui \n\
+WSGIPythonPath /usr/local/apache2/htdocs \n\
 <Directory /usr/local/apache2/htdocs/pydnsui> \n\
 <Files wsgi.py> \n\
 Require all granted \n\
