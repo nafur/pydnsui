@@ -6,6 +6,11 @@ import dns.update
 import dns.zone
 import json
 
+from django.conf import settings
+
+def get_keyring():
+	return dns.tsigkeyring.from_text(settings.DNS_KEYRING)
+
 def serialize(record):
 	return base64.b64encode(json.dumps(record).encode('utf8'), altchars = b'+_').decode('utf8')
 def unserialize(s):
@@ -40,7 +45,3 @@ def get_zone_records(server, zone):
 				r['serialized'] = serialize(r)
 				records.append(r)
 	return records
-
-def get_keyring():
-	return dns.tsigkeyring.from_text({
-	})
