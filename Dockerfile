@@ -13,4 +13,6 @@ EXPOSE	80
 
 ADD	. /usr/local/apache2/htdocs/
 
+RUN	cd /usr/local/apache2/htdocs/ && ./manage.py collectstatic
+
 CMD	["apachectl", "-D", "FOREGROUND"]
