@@ -138,7 +138,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 			'active': True,
 			'filename': settings.BIND_CONFIG_DIR + 'main.conf',
 			'content': render_to_string('config/bind_main.tpl', {
-				'zones': map(lambda z: z['filename'], filter(lambda z: f['include'], files)),
+				'zones': map(lambda z: z['filename'], filter(lambda f: f['include'], files)),
 			})
 		})
 		return files, warnings
