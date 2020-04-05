@@ -3,17 +3,11 @@
 {% load fontawesome_5 %}
 
 {% block content %}
+<span class="float-right">
+	Admins:
+	{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
+</span>
 <h1>Zone {{ object.name }}</h1>
-
-<div class="card">
-<div class="row card-body">
-	<div class="col">
-		Admin users:
-		{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
-	</div>
-</div>
-</div>
-<br />
 
 <table class="table">
 	<thead>
