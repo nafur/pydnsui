@@ -2,6 +2,7 @@ import datetime
 import subprocess
 from django import template
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -16,5 +17,6 @@ def enabled_icon(obj, property_name = 'enabled'):
 @register.simple_tag
 def git_version():
 	describe = subprocess.run(['git', 'describe', '--always'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
-	when = subprocess.run(['git', 'log', '-1', '--format=%cd'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
-	return "git version {} from {}".format(describe, when)
+	hash = subprocess.run(['git', 'log', '-1', '--format=%h', '--date=relative'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
+	when = subprocess.run(['git', 'log', '-1', '--format=%cd', '--date=relative'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
+	return mark_safe("git <a href=\"https://github.com/nafur/pydnsui/commit/{}\">version {}</a> from {}".format(describe, hash, when))
