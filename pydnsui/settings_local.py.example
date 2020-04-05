@@ -13,5 +13,3 @@ DATABASES = {
 		'PORT': '3306',
 	}
 }
-
-STATIC_ROOT = '/absolute/path/to/project/static'
