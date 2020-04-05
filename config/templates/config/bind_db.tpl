@@ -1,7 +1,7 @@
 $ORIGIN {{ zone.name }}.
 $TTL 5m
 
-{{ zone.name }} IN SOA {{ zone.name }}. noreply.{{ zone.name }}. (
+@ IN SOA {{ zone.name }}. noreply.{{ zone.name }}. (
 	{% now "ymdHi" %} ; serial number
 	30m ; refresh 
 	5m ; update retry
