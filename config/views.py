@@ -96,6 +96,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 		warnings = []
 		for zone in models.Zone.objects.all():
 			slaves = []
+			fedzone = None
 			try:
 				fedzone = federation.models.Zone.objects.get(name = zone.name)
 				slaves = fedzone.get_slaves()
