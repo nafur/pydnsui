@@ -1,6 +1,7 @@
 import datetime
 import subprocess
 from django import template
+from django.conf import settings
 
 register = template.Library()
 
@@ -14,6 +15,6 @@ def enabled_icon(obj, property_name = 'enabled'):
 
 @register.simple_tag
 def git_version():
-	describe = subprocess.run(['git', 'describe', '--always'], capture_output = True).stdout.decode('utf8')
-	when = subprocess.run(['git', 'log', '-1', '--format=%cd'], capture_output = True).stdout.decode('utf8')
+	describe = subprocess.run(['git', 'describe', '--always'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
+	when = subprocess.run(['git', 'log', '-1', '--format=%cd'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
 	return "git version {} from {}".format(describe, when)
