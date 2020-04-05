@@ -131,7 +131,7 @@ class Zone(models.Model):
 		})
 	
 	def get_nameservers(self):
-		return [master.nameserver] + [
+		return [self.master.nameserver] + [
 			s.nameserver for s in self.get_slaves()
 		]
 	
