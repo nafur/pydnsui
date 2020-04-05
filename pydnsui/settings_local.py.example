@@ -2,3 +2,16 @@
 ALLOWED_HOSTS = [
 	'example.com'
 ]
+
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'NAME': 'pydnsui',
+		'USER': 'pydnsui',
+		'PASSWORD': 'password',
+		'HOST': 'mysql',
+		'PORT': '3306',
+	}
+}
+
+STATIC_ROOT = '/absolute/path/to/project/static'
