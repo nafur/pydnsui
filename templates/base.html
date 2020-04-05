@@ -1,4 +1,5 @@
 {% load fontawesome_5 %}
+{% load helpers %}
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -41,6 +42,9 @@
 			<div class="container-fluid" style="padding-top: 60px;">
 				{% block content %}No Content{% endblock %}
 			</div>
+			<nav class="navbar fixed-bottom navbar-light bg-light">
+				<span class="mx-auto">{% git_version %}</span>
+			</nav>
 		</div>
 	</body>
 </html>
