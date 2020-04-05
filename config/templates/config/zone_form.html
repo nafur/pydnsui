@@ -3,7 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+{% if form.name.initial %}
+<h1>Change {{ form.name.initial }}</h1>
+{% else %}
 <h1>New zone</h1>
+{% endif %}
 
 {% crispy form form_helper %}
 

@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1>Delete zone</h1>
+<h1>Delete zone {{ object.name }}</h1>
 
 <form method="POST">
 	{% csrf_token %}
