@@ -8,8 +8,7 @@
 <div class="card">
 <div class="row card-body">
 	<div class="col">
-		Zone is {% if object.enabled %}enabled{% else %}disabled{% endif %},
-		admin users:
+		Admin users:
 		{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
 	</div>
 </div>
