@@ -9,10 +9,6 @@ $TTL 5m
 	1m ; minimum
 )
 
-{% for ns in zone.nameserver %}
-{{ zone.name}}. IN NS {{ ns.nameserver }}
-{% endfor %}
-
-{% for r in zone.records.all %}
-{{ r.rname|ljust:"10" }} {{ r.rttl|rjust:"6" }} {{ r.rclass|ljust:"2" }} {{ r.rtype|ljust:"5" }} {{ r.rdata }}
+{% for ns in zone.get_nameservers %}
+{{ zone.name}}. IN NS {{ ns }}
 {% endfor %}

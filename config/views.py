@@ -15,6 +15,7 @@ from . import forms as models
 import federation
 
 import dns
+import subprocess
 
 from config.forms import *
 from config import dnsutils
@@ -108,6 +109,13 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 					'basedir': settings.BIND_CONFIG_DIR,
 					'zone': zone,
 					'slaves': slaves,
+				}),
+			})
+			files.append({
+				'name': 'db.{}'.format(zone.name),
+				'filename': settings.BIND_CONFIG_DIR + 'db.{}'.format(zone.name),
+				'content': render_to_string('config/bind_db.tpl', {
+					'zone': zone,
 				}),
 			})
 		

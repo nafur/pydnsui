@@ -130,6 +130,11 @@ class Zone(models.Model):
 			'pk': self.pk,
 		})
 	
+	def get_nameservers(self):
+		return [master.nameserver] + [
+			s.nameserver for s in self.get_slaves()
+		]
+	
 	def get_slaves(self):
 		if self.slaves_all:
 			return Server.objects.filter(
