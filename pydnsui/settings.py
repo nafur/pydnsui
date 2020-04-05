@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-SERVER_NAME = 'gereon-kremer.de'
-BIND_CONFIG_DIR = '/tmp2/etc/bind/'
-BIND_RELOAD_CMD = ['sudo', '-n', 'systemctl', '--no-ask-password', 'reload', 'bind9']
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

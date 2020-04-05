@@ -1,7 +1,15 @@
 
+BIND_SERVER_NAME = 'examplecom'
+BIND_CONFIG_DIR = '/etc/bind/named.conf.d/'
+BIND_RELOAD_CMD = ['sudo', '-n', 'systemctl', '--no-ask-password', 'reload', 'bind9']
+
 ALLOWED_HOSTS = [
 	'example.com'
 ]
+
+DNS_KEYRING = {
+	'key-name' : 'key-secret',
+}
 
 DATABASES = {
 	'default': {

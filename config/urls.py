@@ -28,6 +28,12 @@ urlpatterns = [
 		),
 		name = 'zone-create',
 	),
+	path('zones/deploy',
+		login_required(
+			views.ZoneDeployView.as_view()
+		),
+		name = 'zone-deploy',
+	),
 	path('zones/<int:pk>',
 		login_required(
 			views.ZoneDetailView.as_view()

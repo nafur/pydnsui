@@ -24,7 +24,7 @@ class ZoneDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['records'] = dnsutils.get_zone_records(settings.SERVER_NAME, self.get_object().name)
+		context['records'] = dnsutils.get_zone_records(settings.BIND_SERVER_NAME, self.get_object().name)
 		return context
 
 class RecordCreateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
@@ -38,7 +38,7 @@ class RecordCreateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMix
 	def form_valid(self, form):
 		if form.is_valid():
 			zone = models.Zone.objects.get(pk = self.kwargs['zone'])
-			u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+			u = dnsutils.Updater(settings.BIND_SERVER_NAME, zone.name)
 			u.add(form.cleaned_data)
 			u.send()
 		return super(RecordCreateView, self).form_valid(form)
@@ -61,7 +61,7 @@ class RecordUpdateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMix
 		form = self.get_form()
 		if form.is_valid():
 			zone = models.Zone.objects.get(pk = self.kwargs['zone'])
-			u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+			u = dnsutils.Updater(settings.BIND_SERVER_NAME, zone.name)
 			u.delete(dnsutils.unserialize(self.kwargs['serialized']))
 			u.add(form.cleaned_data)
 			response = u.send()
@@ -80,69 +80,68 @@ class RecordDeleteView(base.TemplateResponseMixin, edit.FormMixin, edit.ProcessF
 
 	def post(self, request, *args, **kwargs):
 		zone = models.Zone.objects.get(pk = self.kwargs['zone'])
-		u = dnsutils.Updater(settings.SERVER_NAME, zone.name)
+		u = dnsutils.Updater(settings.BIND_SERVER_NAME, zone.name)
 		u.delete(dnsutils.unserialize(self.kwargs['serialized']))
 		u.send()
 		return HttpResponseRedirect(reverse('zone-detail', kwargs = {'pk': self.kwargs['zone']}))
 
-class DeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
+class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
 	form_class = forms.Form
 	template_name = 'config/deploy_form.html'
 	success_url = reverse_lazy('zone-list')
-
-	def get_slaves_for_zone(self, zone, fed_master_zones, fed_slaves):
-		if zone.name in fed_master_zones:
-			if fed_master_zones[zone.name].slaves_all:
-				return fed_slaves
-			else:
-				return fed_master_zones[zone.name].slaves.all()
-		return []
-
+	
 	def render_configuration(self):
-		# This server as a federation.models.Server
-		this_server = federation.models.Server.get_this_server()
-		# All other servers as a federation.models.Server
-		fed_slaves = federation.models.Server.get_other_servers()
-		# Local zones
-		master_zones = models.Zone.objects.filter()
-		# Federated zones where we are the master
-		fed_master_zones = {
-			z.name: z for z in
-			federation.models.Zone.get_master_zones()
-		}
-		# Federated zones where we are a slave
-		slave_zones = federation.models.Zone.get_slave_zones()
-
-		for mz in master_zones:
-			mz.slaves = self.get_slaves_for_zone(mz, fed_master_zones, fed_slaves)
-
-		files = [{
-			'active': True,
-			'name': 'master',
-			'filename': settings.BIND_CONFIG_DIR + 'zones.conf',
-			'content': render_to_string('config/bind_zones.tpl', {
-				'master_zones': master_zones,
-				'slave_zones': slave_zones,
-			})
-		}]
-		for z in master_zones:
-			z.nameserver = [ this_server ] + list(self.get_slaves_for_zone(z, fed_master_zones, fed_slaves))
+		files = []
+		warnings = []
+		for zone in models.Zone.objects.all():
+			slaves = []
+			try:
+				fedzone = federation.models.Zone.objects.get(name = zone.name)
+				slaves = fedzone.get_slaves()
+			except:
+				warnings.append("The zone {} is configured locally, but not configured in the federation.".format(zone.name))
+			
 			files.append({
-				'name': z.name,
-				'filename': settings.BIND_CONFIG_DIR + 'zones/db.{}'.format(z.name),
-				'content': render_to_string('config/bind_db.tpl', { 'zone': z }),
+				'name': zone.name,
+				'filename': settings.BIND_CONFIG_DIR + '{}.conf'.format(zone.name),
+				'content': render_to_string('config/bind_zone.tpl', {
+					'basedir': settings.BIND_CONFIG_DIR,
+					'zone': zone,
+					'slaves': slaves,
+				}),
 			})
-		return files
+		
+		for zone in federation.models.Zone.get_slave_zones():
+			files.append({
+				'name': zone.name,
+				'filename': settings.BIND_CONFIG_DIR + 'slave_{}.conf'.format(zone.name),
+				'content': render_to_string('config/bind_slave_zone.tpl', {
+					'basedir': settings.BIND_CONFIG_DIR,
+					'zone': zone,
+					'slaves': zone.get_slaves(),
+				}),
+			})
+		
+		files.insert(0, {
+			'name': 'main.conf',
+			'active': True,
+			'filename': settings.BIND_CONFIG_DIR + 'main.conf',
+			'content': render_to_string('config/bind_main.tpl', {
+				'zones': map(lambda z: z['filename'], files),
+			})
+		})
+		return files, warnings
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['files'] = self.render_configuration()
+		context['files'], context['warnings'] = self.render_configuration()
 		return context
-
+	
 	def post(self, request, *args, **kwargs):
 		print("Now we configure the server")
 		errors = []
-		for file in self.render_configuration():
+		files, _ = self.render_configuration()
+		for file in files:
 			print("Writing to {}".format(file['filename']))
 			try:
 				f = open(file['filename'], 'w')

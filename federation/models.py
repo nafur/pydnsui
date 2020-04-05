@@ -98,14 +98,6 @@ class Server(models.Model):
 		return reverse('fed:server-detail', kwargs = {
 			'pk': self.pk,
 		})
-	def is_this_server(self):
-		return settings.SERVER_NAME == self.name
-	@staticmethod
-	def get_this_server():
-		return Server.objects.get(name = settings.SERVER_NAME)
-	@staticmethod
-	def get_other_servers():
-		return Server.objects.exclude(name = settings.SERVER_NAME)
 
 class Zone(models.Model):
 	name = models.CharField(
@@ -138,17 +130,19 @@ class Zone(models.Model):
 			'pk': self.pk,
 		})
 	
-	@staticmethod
-	def get_master_zones():
-		return Zone.objects.filter(
-			Q(enabled = True) & Q(master = Server.get_this_server())
-		)
+	def get_slaves(self):
+		if self.slaves_all:
+			return Server.objects.filter(
+				Q(enabled = True) & ~Q(pk = self.master.pk)
+			)
+		return self.slaves.all()
+
 	@staticmethod
 	def get_slave_zones():
-		this_server = Server.get_this_server()
+		servers = Server.objects.filter(remote = None)
 		return Zone.objects.filter(
 			Q(enabled = True) & (
-				Q(slaves = this_server) |
-				(Q(slaves_all = True) & ~Q(master = this_server))
+				Q(slaves__in = servers) |
+				(Q(slaves_all = True) & ~Q(master__in = servers))
 			)
 		)

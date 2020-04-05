@@ -5,12 +5,16 @@
 {% block content %}
 <h1>Deploy configuration</h1>
 
+{% for w in warnings %}
+<div class="alert alert-warning">
+	{{ w }}
+</div>
+{% endfor %}
+
 <p>
 	Please review the files shown below.
 	Do you really want to deploy this configuration?
 </p>
-
-{% crispy form form_helper %}
 
 <ul class="nav nav-tabs" id="deployTab" role="tablist">
 {% for file in files %}
@@ -32,5 +36,8 @@
 	</div>
 {% endfor %}
 </div>
+
+
+{% crispy form form_helper %}
 
 {% endblock %}
