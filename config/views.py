@@ -25,7 +25,10 @@ class ZoneDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['records'] = dnsutils.get_zone_records(settings.BIND_SERVER_NAME, self.get_object().name)
+		try:
+			context['records'] = dnsutils.get_zone_records(settings.BIND_SERVER_NAME, self.get_object().name)
+		except Exception as e:
+			context['error'] = e
 		return context
 
 class RecordCreateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):

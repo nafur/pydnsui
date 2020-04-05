@@ -9,6 +9,12 @@
 </span>
 <h1>Zone {{ object.name }}</h1>
 
+{% if error %}
+<div class="alert alert-danger">
+	{{ error }}
+</div>
+{% endif %}
+
 <table class="table">
 	<thead>
 		<tr>
