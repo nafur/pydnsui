@@ -116,7 +116,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 				'name': 'db.{}'.format(zone.name),
 				'filename': settings.BIND_CONFIG_DIR + 'db.{}'.format(zone.name),
 				'content': render_to_string('config/bind_db.tpl', {
-					'zone': zone,
+					'zone': fedzone,
 				}),
 				'include': False,
 			})
