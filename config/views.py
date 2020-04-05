@@ -110,6 +110,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 					'zone': zone,
 					'slaves': slaves,
 				}),
+				'include': True,
 			})
 			files.append({
 				'name': 'db.{}'.format(zone.name),
@@ -117,6 +118,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 				'content': render_to_string('config/bind_db.tpl', {
 					'zone': zone,
 				}),
+				'include': False,
 			})
 		
 		for zone in federation.models.Zone.get_slave_zones():
@@ -128,6 +130,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 					'zone': zone,
 					'slaves': zone.get_slaves(),
 				}),
+				'include': True,
 			})
 		
 		files.insert(0, {
@@ -135,7 +138,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 			'active': True,
 			'filename': settings.BIND_CONFIG_DIR + 'main.conf',
 			'content': render_to_string('config/bind_main.tpl', {
-				'zones': map(lambda z: z['filename'], files),
+				'zones': map(lambda z: z['filename'], filter(lambda z: f['include'], files)),
 			})
 		})
 		return files, warnings
