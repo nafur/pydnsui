@@ -13,6 +13,8 @@ EXPOSE	80
 
 ADD	. /usr/local/apache2/htdocs/
 
-RUN	cd /usr/local/apache2/htdocs/ && ./manage.py collectstatic
+RUN	cd /usr/local/apache2/htdocs/ && \
+	./manage.py collectstatic && \
+	./manage.py migrate
 
 CMD	["apachectl", "-D", "FOREGROUND"]
