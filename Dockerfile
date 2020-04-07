@@ -14,8 +14,7 @@ EXPOSE	80
 ADD	. /usr/local/apache2/htdocs/
 
 RUN	cd /usr/local/apache2/htdocs/ && \
-	./manage.py collectstatic && \
-	./manage.py migrate
+	./manage.py collectstatic
 
 COPY	.startup.sh /startup.sh
 
