@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load fontawesome_5 %}
+
+{% block content %}
+<span class="float-right">
+	Admins:
+	{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
+</span>
+<h1>DynDNS::Zone {{ object.zone.name }}</h1>
+
+Associated with <a href="{{ object.zone.get_absolute_url }}">{{ object.zone.name }}</a>
+
+{% if error %}
+<div class="alert alert-danger">
+	{{ error }}
+</div>
+{% endif %}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Token</th>
+			<th>Last update</th>
+			<th>
+				<div class="float-right">
+					<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-create' zone.pk %}">{% fa5_icon 'plus' %} new host</a>
+				</div>
+			</th>
+		</tr>
+	</thead>
+{% for host in object.hosts.all %}
+	<tr>
+		<td><strong>{{ host.name }}</strong>.{{ host.zone }}</td>
+		<td><code>{{ host.token }}</code></td>
+		<td>{{ host.last_update }}</td>
+		<td>
+			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-delete' host.pk %}">{% fa5_icon 'trash' %} delete</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-renew-token' host.pk %}">{% fa5_icon 'redo' %} renew token</a>
+		</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 	'crispy_forms',
 	'fontawesome_5',
 	'config',
+	'dyndns',
 	'federation',
 ]
 

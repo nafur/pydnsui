@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Renew token for {{ object }}</h1>
+
+{% crispy form form_helper %}
+
+{% endblock %}

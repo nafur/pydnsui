@@ -11,7 +11,6 @@ from django.views.generic import *
 from django.views.generic import base, detail, edit
 
 from pydnsui.views import *
-from . import forms as models
 import federation
 
 import dns

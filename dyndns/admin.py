@@ -1,3 +1,5 @@
 from django.contrib import admin
+from dyndns.models import *
 
-# Register your models here.
+admin.site.register(Zone)
+admin.site.register(Host)
