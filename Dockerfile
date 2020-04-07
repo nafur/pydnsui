@@ -17,4 +17,6 @@ RUN	cd /usr/local/apache2/htdocs/ && \
 	./manage.py collectstatic && \
 	./manage.py migrate
 
-CMD	["apachectl", "-D", "FOREGROUND"]
+COPY	.startup.sh /startup.sh
+
+CMD	["/startup.sh"]
