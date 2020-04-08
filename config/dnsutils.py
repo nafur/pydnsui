@@ -25,6 +25,9 @@ class Updater:
 		self.__update.add(r['rname'], r['rttl'], r['rtype'], r['rdata'])
 	def delete(self, r):
 		self.__update.delete(r['rname'], r['rtype'], r['rdata'])
+	def delete_host(self, name):
+		self.__update.delete(name, 'A')
+		self.__update.delete(name, 'AAAA')
 	def send(self):
 		return dns.query.tcp(self.__update, self.__server)
 

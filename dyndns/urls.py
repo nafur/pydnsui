@@ -74,4 +74,7 @@ urlpatterns = [
 		),
 		name = 'host-renew-token',
 	),
+	path('update/<int:pk>/<str:token>',
+		views.HostUpdateView.as_view()
+	),
 ]
