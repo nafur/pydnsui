@@ -70,8 +70,8 @@ def update_host(pk, token, ipv4 = None, ipv6 = None):
 			'rtype': 'AAAA',
 			'rdata': ipv6
 		})
-	u.send()
-	return HttpResponse("Okay")
+	response = u.send()
+	return HttpResponse("Response: {}".format(response))
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HostUpdateView(View):
