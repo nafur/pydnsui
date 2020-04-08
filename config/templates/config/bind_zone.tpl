@@ -12,7 +12,6 @@ zone "{{ zone.name }}" {
 	};
 	allow-query { any; };
 	zone-statistics yes;
-	update-policy local;
 	key-directory "/etc/bind/keys";
 	auto-dnssec maintain;
 	inline-signing yes;
