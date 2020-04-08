@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import *
@@ -91,6 +92,8 @@ def update_host(pk, token, ipv4 = None, ipv6 = None):
 			'rdata': ipv6
 		})
 	response = u.send()
+	host.last_update = timezone.now()
+	host.save()
 	return HttpResponse("Response: {}".format(response))
 
 @method_decorator(csrf_exempt, name='dispatch')
