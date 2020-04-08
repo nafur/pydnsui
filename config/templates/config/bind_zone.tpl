@@ -7,6 +7,9 @@ zone "{{ zone.name }}" {
 		{{ s.ipv4 }}; {{ s.ipv6 }}; # {{ s.name }}
 		{% endfor %}
 	};
+	allow-update {
+		10.0.0.0/16; # docker network
+	};
 	allow-query { any; };
 	zone-statistics yes;
 	update-policy local;
