@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import *
@@ -29,6 +29,26 @@ class HostDeleteView(CrispyDeleteView):
 		return reverse_lazy('ddns:zone-detail', kwargs = {
 			'pk': self.get_object().zone.pk
 		})
+
+class HostDetailView(DetailView):
+	model = models.Host
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		BASE_URL = 'https://dns.gereon-kremer.de'
+		context['endpoints'] = [
+			{
+				'active': True,
+				'id': 'fritzbox',
+				'name': 'Fritz!Box',
+				'url': BASE_URL + reverse('ddns:host-update-fritzbox', kwargs = {
+					'pk': self.get_object().pk,
+					'token': self.get_object().token,
+				}) + "?ipv4=<ipaddr>&ipv6=<ip6addr>"
+			},
+		]
+		return context
+	
 
 class HostRenewTokenView(CrispyUpdateView):
 	model = models.Host
@@ -74,7 +94,7 @@ def update_host(pk, token, ipv4 = None, ipv6 = None):
 	return HttpResponse("Response: {}".format(response))
 
 @method_decorator(csrf_exempt, name='dispatch')
-class HostUpdateView(View):
+class HostUpdateFritzboxView(View):
 	http_method_names = ['get', 'post']
 
 	def get(self, request, *args, **kwargs):

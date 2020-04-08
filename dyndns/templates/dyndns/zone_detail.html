@@ -38,6 +38,7 @@ Associated with <a href="{{ object.zone.get_absolute_url }}">{{ object.zone.name
 		<td>
 			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-delete' host.pk %}">{% fa5_icon 'trash' %} delete</a>
 			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-renew-token' host.pk %}">{% fa5_icon 'redo' %} renew token</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-usage' host.pk %}">{% fa5_icon 'angle-double-up' %} usage</a>
 		</td>
 	</tr>
 {% endfor %}

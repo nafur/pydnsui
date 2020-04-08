@@ -74,7 +74,14 @@ urlpatterns = [
 		),
 		name = 'host-renew-token',
 	),
-	path('update/<int:pk>/<str:token>',
-		views.HostUpdateView.as_view()
+	path('host/<int:pk>/usage',
+		login_required(
+			views.HostDetailView.as_view()
+		),
+		name = 'host-usage',
+	),
+	path('fritzbox/<int:pk>/<str:token>',
+		views.HostUpdateFritzboxView.as_view(),
+		name = 'host-update-fritzbox',
 	),
 ]
