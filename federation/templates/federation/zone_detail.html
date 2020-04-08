@@ -16,7 +16,7 @@
 	<dd>
 		{% if object.slaves_all %}ALL{% endif %}
 		{% for s in object.slaves.all %}
-			<span class="badge badge-secondary"><a href="{{ s.get_absolute_url }}">{{ s.name }}</a></span>
+			<a href="{{ s.get_absolute_url }}"><span class="badge badge-secondary">{{ s.name }}</span></a>
 		{% endfor %}
 	</dd>
 </dl>

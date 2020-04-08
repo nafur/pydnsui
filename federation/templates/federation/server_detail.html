@@ -23,13 +23,13 @@
 	<dt>Master zones</dt>
 	<dd>
 		{% for record in object.zones_master.all %}
-			<span class="badge badge-light"><a href="{{ record.get_absolute_url }}">{{ record }}</a></span>
+		<a href="{{ record.get_absolute_url }}"><span class="badge badge-light">{{ record }}</span></a>
 		{% endfor %}
 	</dd>
 	<dt>Slave zones</dt>
 	<dd>
 		{% for record in object.zones_slave.all %}
-			<span class="badge badge-light"><a href="{{ record.get_absolute_url }}">{{ record }}</a></span>
+		<a href="{{ record.get_absolute_url }}"><span class="badge badge-light">{{ record }}</span></a>
 		{% endfor %}
 	</dd>
 </dl>

@@ -21,7 +21,11 @@
 {% for zone in object_list %}
 	<tr{% if not zone.enabled %} class="table-secondary"{% endif %}>
 		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{{ zone.zone.name }}</a></th>
-		<td></td>
+		<td>
+			{% for host in zone.hosts.all %}
+			<a href="{{ host.get_absolute_url }}"><span class="badge badge-secondary">{{ host.name }}</span></a>
+			{% endfor %}
+		</td>
 		<td>
 			{% if zone.enabled %}
 				<a class="btn btn-sm btn-secondary" href="{% url 'ddns:zone-disable' zone.pk %}">{% fa5_icon 'ban' %} disable</a>
