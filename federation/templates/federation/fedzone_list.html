@@ -12,6 +12,7 @@
 			<th>Name</th>
 			<th>Master</th>
 			<th>Slaves</th>
+			<th>Owner</th>
 			<th><a class="btn btn-sm btn-primary float-right" href="{% url 'fed:zone-create' %}">{% fa5_icon 'plus' %} New zone</a></th>
 		</tr>
 	</thead>
@@ -25,6 +26,7 @@
 			<a href="{{ s.get_absolute_url }}"><span class="badge badge-secondary">{{ s.name }}</span></a>
 			{% endfor %}
 		</td>
+		<td>{% show_owner zone %}</td>
 		<td>
 			{% if zone.enabled %}
 				<a class="btn btn-sm btn-secondary" href="{% url 'fed:zone-disable' zone.pk %}">{% fa5_icon 'ban' %} disable</a>

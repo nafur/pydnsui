@@ -22,6 +22,7 @@ def server_row(server, only_local = None):
 		<td><code>{{ server.ipv4 }}</code></td>
 		<td><code>{{ server.ipv6 }}</code></td>
 		<td><code>{{ server.nameserver }}</code></td>
+		<td>{% show_owner server %}
 		<td>
 			{% if server.enabled %}
 				<a class="btn btn-sm btn-secondary" href="{% url 'fed:server-disable' server.pk %}">{% fa5_icon 'ban' %} disable</a>

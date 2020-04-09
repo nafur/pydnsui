@@ -55,7 +55,7 @@ class Remote(OwnedModel):
 		return self.pull_last > timezone.now() - timedelta(hours = 1)
 
 
-class Server(models.Model):
+class Server(OwnedModel):
 	class Meta:
 		ordering = [F('remote').asc(nulls_last = False), 'name']
 	name = models.CharField(
@@ -97,7 +97,7 @@ class Server(models.Model):
 			'pk': self.pk,
 		})
 
-class FedZone(models.Model):
+class FedZone(OwnedModel):
 	name = models.CharField(
 		max_length = 255,
 		unique = True,

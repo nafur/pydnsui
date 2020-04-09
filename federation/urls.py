@@ -33,7 +33,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Remote,
-				fields = [ 'name', 'enabled', 'owner', 'auth_token', 'pull_url', 'pull_token'],
+				fields = [ 'name', 'enabled', 'owners', 'auth_token', 'pull_url', 'pull_token'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -98,7 +98,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Server,
-				fields = [ 'name', 'enabled', 'ipv4', 'ipv6', 'nameserver'],
+				fields = [ 'name', 'enabled', 'owners', 'ipv4', 'ipv6', 'nameserver'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -186,7 +186,7 @@ urlpatterns = [
 			CrispyUpdateView.as_view(
 				model = models.FedZone,
 				fields = [
-					'name', 'enabled', 'master', 'slaves_all', 'slaves'
+					'name', 'enabled', 'owners', 'master', 'slaves_all', 'slaves'
 				],
 				form_submit_text = 'Submit',
 			)
