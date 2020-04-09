@@ -15,7 +15,7 @@ from . import forms, models
 class HostCreateView(CrispyCreateView):
 	model = models.Host
 	form_class = forms.HostCreateForm
-	template_name = 'dyndns/dynhost_form.html'
+	template_name = 'dyndns/host_form.html'
 	form_submit_text = 'Submit'
 
 	def get_form_kwargs(self):
