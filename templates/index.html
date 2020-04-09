@@ -3,5 +3,64 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-Welcome!
+
+<h1>Dashboard</h1>
+
+<div class="card-columns">
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title"><a href="{% url 'config:zone-list' %}">Local zones</a> <span class="badge badge-secondary badge-pill float-right">{{ zones|length }} zones</span></h5>
+			<p class="card-text">
+				{% for zone in zones %}
+				<a href="{% url 'config:zone-detail' zone.pk %}"><span class="badge badge-secondary">{{ zone.name }}</span></a>
+				{% endfor %}
+			</p>
+		</div>
+	</div>
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title"><a href="{% url 'fed:remote-list' %}">Federation::Remotes</a> <span class="badge badge-secondary badge-pill float-right">{{ remotes|length }} remotes</span></h5>
+			<p class="card-text">
+				{% for remote in remotes %}
+				<a href="{% url 'fed:remote-detail' remote.pk %}"><span class="badge badge-secondary">{{ remote.name }}</span></a>
+				{% endfor %}
+			</p>
+		</div>
+	</div>
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title"><a href="{% url 'fed:server-list' %}">Federation::Servers</a> <span class="badge badge-secondary badge-pill float-right">{{ servers|length }} server</span></h5>
+			<p class="card-text">
+				<dl>
+				{% for server in servers %}
+					<dt><a href="{% url 'fed:server-detail' server.pk %}">{{ server.name }}</a> <span class="badge badge-secondary badge-pill float-right">{{ server.ipv4 }} / {{ server.ipv6 }}</span></dt>
+					<dd>
+						Master zones:
+						{% for zone in server.zones_master.all %}
+						<a href="{% url 'fed:zone-detail' zone.pk %}"><span class="badge badge-secondary">{{ zone.name }}</span></a>
+						{% endfor %}
+					</dd>
+				{% endfor %}
+				</dl>
+			</p>
+		</div>
+	</div>
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title"><a href="{% url 'ddns:zone-list' %}">DynDNS::Zones</a> <span class="badge badge-secondary badge-pill float-right">{{ ddns_zones|length }} zones</span></h5>
+			<p class="card-text">
+				<dl>
+				{% for zone in ddns_zones %}
+					<dt><a href="{% url 'ddns:zone-detail' zone.pk %}">{{ zone.zone.name }}</a> <span class="badge badge-secondary badge-pill float-right">{{ zone.hosts.all|length }} hosts</span></dt>
+					<dd>
+						{% for host in zone.hosts.all %}
+						<a href="{% url 'ddns:zone-detail' zone.pk %}"><span class="badge badge-secondary">{{ host.name }}</span></a>
+						{% endfor %}
+					</dd>
+				{% endfor %}
+				</dl>
+			</p>
+		</div>
+	</div>
+</div>
 {% endblock %}

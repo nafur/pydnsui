@@ -4,6 +4,10 @@ from django.views.generic import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 
+import config
+import dyndns
+import federation
+
 def default_layout(form, submit_text):
 	fields = [f for f,_ in form.base_fields.items()]
 	helper = FormHelper()
@@ -57,3 +61,11 @@ class EnableView(PropertyModifierView):
 
 class IndexView(TemplateView):
 	template_name = 'index.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(IndexView, self).get_context_data(**kwargs)
+		context['zones'] = config.models.Zone.objects.all()
+		context['ddns_zones'] = dyndns.models.Zone.objects.all()
+		context['remotes'] = federation.models.Remote.objects.all()
+		context['servers'] = federation.models.Server.objects.all()
+		return context
