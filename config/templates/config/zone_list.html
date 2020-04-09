@@ -20,6 +20,7 @@
 		</tr>
 	</thead>
 {% for zone in object_list %}
+	{% if zone.is_owned %}
 	<tr>
 		<th><a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
 		<td>{% show_owner zone %}</td>
@@ -28,6 +29,7 @@
 			<a class="btn btn-sm btn-primary" href="{% url 'zone-delete' zone.pk %}">{% fa5_icon 'trash' %} delete</a>
 		</td>
 	</tr>
+	{% endif %}
 {% endfor %}
 </table>
 

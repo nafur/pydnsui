@@ -18,7 +18,9 @@
 		</tr>
 	</thead>
 {% for server in object_list %}
+	{% if server.is_owned %}
 	{% server_row server True %}
+	{% endif %}
 {% endfor %}
 	<thead>
 		<tr>
@@ -28,7 +30,9 @@
 		</tr>
 	</thead>
 {% for server in object_list %}
+	{% if server.is_owned %}
 	{% server_row server False %}
+	{% endif %}
 {% endfor %}
 </table>
 

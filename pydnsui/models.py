@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import pre_save
+from django.core.exceptions import PermissionDenied
 
 from cuser.middleware import CuserMiddleware
 
@@ -27,7 +29,9 @@ class OwnedModel(models.Model):
 			self.owners.add(CuserMiddleware.get_user())
 		elif self.is_owned():
 			super().save(*args, **kwargs)
-	
+		else:
+			raise PermissionDenied()
+
 	def delete(self, *args, **kwargs):
 		if self.is_owned():
 			super().delete(*args, **kwargs)

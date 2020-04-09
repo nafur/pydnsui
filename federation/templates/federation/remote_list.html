@@ -15,6 +15,7 @@
 		</tr>
 	</thead>
 {% for remote in object_list %}
+	{% if remote.is_owned %}
 	<tr{% if not remote.enabled %} class="table-secondary"{% endif %}>
 		<th>{% enabled_icon remote %} <a href="{{ remote.get_absolute_url }}">{{ remote.name }}</a></th>
 		<td>
@@ -36,6 +37,7 @@
 			<a class="btn btn-sm btn-primary" href="{% url 'fed:remote-delete' remote.pk %}">{% fa5_icon 'trash' %} delete</a>
 		</td>
 	</tr>
+	{% endif %}
 {% endfor %}
 </table>
 

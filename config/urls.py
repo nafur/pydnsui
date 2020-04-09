@@ -3,6 +3,7 @@ from django.urls import path, reverse_lazy
 from django.views.generic import *
 
 from pydnsui.views import *
+from pydnsui.decorators import *
 from . import forms, models, views
 
 urlpatterns = [
@@ -35,13 +36,13 @@ urlpatterns = [
 		name = 'zone-deploy',
 	),
 	path('zones/<int:pk>',
-		login_required(
-			views.ZoneDetailView.as_view()
+		owner_required(
+				views.ZoneDetailView.as_view()
 		),
 		name = 'zone-detail',
 	),
-	path('zones/<int:pk>/edit', 
-		login_required(
+	path('zones/<int:pk>/edit',
+		owner_required(
 			CrispyUpdateView.as_view(
 				model = models.Zone,
 				fields = ['name', 'owners'],
@@ -51,7 +52,7 @@ urlpatterns = [
 		name = 'zone-edit',
 	),
 	path('zones/<int:pk>/delete', 
-		login_required(
+		owner_required(
 			CrispyDeleteView.as_view(
 				model = models.Zone,
 				success_url = reverse_lazy('zone-list'),
@@ -66,14 +67,18 @@ urlpatterns = [
 		name = 'record-create',
 	),
 	path('record/<int:zone>/edit/<str:serialized>', 
-		login_required(
-			views.RecordUpdateView.as_view()
+		owner_required(
+			views.RecordUpdateView.as_view(),
+			model = models.Zone,
+			pk_field = 'zone',
 		),
 		name = 'record-edit',
 	),
 	path('record/<int:zone>/delete/<str:serialized>', 
-		login_required(
-			views.RecordDeleteView.as_view()
+		owner_required(
+			views.RecordDeleteView.as_view(),
+			model = models.Zone,
+			pk_field = 'zone',
 		),
 		name = 'record-delete',
 	),

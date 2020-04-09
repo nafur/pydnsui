@@ -17,6 +17,7 @@
 		</tr>
 	</thead>
 {% for zone in object_list %}
+	{% if zone.is_owned %}
 	<tr{% if not zone.enabled %} class="table-secondary"{% endif %}>
 		<th>{% enabled_icon zone %} <a href="{{ zone.get_absolute_url }}">{% if zone.master.configured_here %}{% fa5_icon 'home' %}{% endif %} {{ zone.name }}</a></th>
 		<td><a href="{{ zone.master.get_absolute_url }}">{{ zone.master.name }}</a></td>
@@ -36,6 +37,7 @@
 			<a class="btn btn-sm btn-primary" href="{% url 'fed:zone-edit' zone.pk %}">{% fa5_icon 'edit' %} edit</a>
 		</td>
 	</tr>
+	{% endif %}
 {% endfor %}
 </table>
 

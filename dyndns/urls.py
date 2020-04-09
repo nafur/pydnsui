@@ -3,6 +3,7 @@ from django.urls import path, reverse_lazy
 from django.views.generic import *
 
 from pydnsui.views import *
+from pydnsui.decorators import *
 from . import forms, models, views
 
 app_name = 'ddns'
@@ -24,13 +25,13 @@ urlpatterns = [
 		name = 'zone-create',
 	),
 	path('zone/<int:pk>',
-		login_required(
+		owner_required(
 			DetailView.as_view(model = models.DynZone)
 		),
 		name = 'zone-detail',
 	),
 	path('zone/<int:pk>/delete',
-		login_required(
+		owner_required(
 			CrispyDeleteView.as_view(
 				model = models.DynZone,
 				success_url = reverse_lazy('ddns:zone-list'),
@@ -39,7 +40,7 @@ urlpatterns = [
 		name = 'zone-delete',
 	),
 	path('zone/<int:pk>/disable',
-		login_required(
+		owner_required(
 			DisableView.as_view(
 				model = models.DynZone,
 				redirect_url = reverse_lazy('ddns:zone-list')
@@ -48,7 +49,7 @@ urlpatterns = [
 		name = 'zone-disable',
 	),
 	path('zone/<int:pk>/enable',
-		login_required(
+		owner_required(
 			EnableView.as_view(
 				model = models.DynZone,
 				redirect_url = reverse_lazy('ddns:zone-list')
@@ -57,25 +58,26 @@ urlpatterns = [
 		name = 'zone-enable',
 	),
 	path('zone/<int:pk>/create-host',
-		login_required(
-			views.HostCreateView.as_view()
+		owner_required(
+			views.HostCreateView.as_view(),
+			model = models.DynZone,
 		),
 		name = 'host-create',
 	),
 	path('host/<int:pk>/delete',
-		login_required(
+		owner_required(
 			views.HostDeleteView.as_view()
 		),
 		name = 'host-delete',
 	),
 	path('host/<int:pk>/renew-token',
-		login_required(
+		owner_required(
 			views.HostRenewTokenView.as_view()
 		),
 		name = 'host-renew-token',
 	),
 	path('host/<int:pk>/usage',
-		login_required(
+		owner_required(
 			views.HostDetailView.as_view()
 		),
 		name = 'host-usage',
