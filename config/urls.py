@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.urls import path, reverse_lazy
 from django.views.generic import *
 
@@ -6,13 +6,8 @@ from pydnsui.views import *
 from pydnsui.decorators import *
 from . import forms, models, views
 
+app_name = 'config'
 urlpatterns = [
-	path('',
-		login_required(TemplateView.as_view(
-			template_name = "config/index.html"
-		)),
-		name='index'
-	),
 	path('zones',
 		login_required(
 			ListView.as_view(model = models.Zone)
@@ -55,7 +50,7 @@ urlpatterns = [
 		owner_required(
 			CrispyDeleteView.as_view(
 				model = models.Zone,
-				success_url = reverse_lazy('zone-list'),
+				success_url = reverse_lazy('config:zone-list'),
 			)
 		),
 		name = 'zone-delete',

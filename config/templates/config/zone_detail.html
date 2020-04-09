@@ -25,7 +25,7 @@
 			<th>Data</th>
 			<th>
 				<div class="float-right">
-					<a class="btn btn-sm btn-primary" href="{% url 'record-create' zone.pk %}">{% fa5_icon 'plus' %} new record</a>
+					<a class="btn btn-sm btn-primary" href="{% url 'config:record-create' zone.pk %}">{% fa5_icon 'plus' %} new record</a>
 				</div>
 			</th>
 		</tr>
@@ -38,8 +38,8 @@
 		<td>{{ record.rtype }}</td>
 		<td>{{ record.rdata }}</td>
 		<td>
-			<a class="btn btn-sm btn-primary" href="{% url 'record-delete' zone.pk record.serialized %}">{% fa5_icon 'trash' %} delete</a>
-			<a class="btn btn-sm btn-primary" href="{% url 'record-edit' zone.pk record.serialized %}">{% fa5_icon 'edit' %} edit</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'config:record-delete' zone.pk record.serialized %}">{% fa5_icon 'trash' %} delete</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'config:record-edit' zone.pk record.serialized %}">{% fa5_icon 'edit' %} edit</a>
 		</td>
 	</tr>
 {% endfor %}

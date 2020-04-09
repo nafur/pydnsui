@@ -12,7 +12,7 @@
 <div class="alert alert-danger">
 	<pre>{{ error }}</pre>
 </div>
-<a class="btn btn-primary" href="{% url 'zone-list' %}">back to zones</a>
+<a class="btn btn-primary" href="{% url 'config:zone-list' %}">back to zones</a>
 {% else %}
 {% for r in records %}
 {{ r.render }}<br />

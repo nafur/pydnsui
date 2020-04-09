@@ -54,3 +54,6 @@ class DisableView(PropertyModifierView):
 class EnableView(PropertyModifierView):
 	property_name = 'enabled'
 	property_value = True
+
+class IndexView(TemplateView):
+	template_name = 'index.html'

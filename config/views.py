@@ -36,7 +36,7 @@ class RecordCreateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMix
 	template_name = 'config/record_form.html'
 	
 	def get_success_url(self):
-		return reverse_lazy('zone-detail', kwargs = {'pk': self.kwargs['zone']})
+		return reverse_lazy('config:zone-detail', kwargs = {'pk': self.kwargs['zone']})
 
 	def form_valid(self, form):
 		if form.is_valid():
@@ -53,7 +53,7 @@ class RecordUpdateView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMix
 	
 	def get_success_url(self):
 		print("Was called!")
-		return reverse_lazy('zone-detail', kwargs = {'pk': self.kwargs['zone']})
+		return reverse_lazy('config:zone-detail', kwargs = {'pk': self.kwargs['zone']})
 	
 	def get_initial(self):
 		initial = super(RecordUpdateView, self).get_initial()
@@ -86,12 +86,12 @@ class RecordDeleteView(base.TemplateResponseMixin, edit.FormMixin, edit.ProcessF
 		u = dnsutils.Updater(settings.BIND_SERVER_NAME, zone.name)
 		u.delete(dnsutils.unserialize(self.kwargs['serialized']))
 		u.send()
-		return HttpResponseRedirect(reverse('zone-detail', kwargs = {'pk': self.kwargs['zone']}))
+		return HttpResponseRedirect(reverse('config:zone-detail', kwargs = {'pk': self.kwargs['zone']}))
 
 class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin, edit.ProcessFormView):
 	form_class = forms.Form
 	template_name = 'config/deploy_form.html'
-	success_url = reverse_lazy('zone-list')
+	success_url = reverse_lazy('config:zone-list')
 	
 	def render_configuration(self):
 		files = []

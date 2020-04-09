@@ -14,6 +14,6 @@ class Zone(OwnedModel):
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
-		return reverse('zone-detail', kwargs = {
+		return reverse('config:zone-detail', kwargs = {
 			'pk': self.pk,
 		})

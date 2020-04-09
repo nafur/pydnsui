@@ -13,8 +13,8 @@
 			<th>Owner</th>
 			<th>
 				<span class="float-right">
-					<a class="btn btn-sm btn-primary" href="{% url 'zone-create' %}">{% fa5_icon 'plus' %} New zone</a>
-					<a class="btn btn-sm btn-primary" href="{% url 'zone-deploy' %}">{% fa5_icon 'cloud-upload-alt' %} Deploy zones</a>
+					<a class="btn btn-sm btn-primary" href="{% url 'config:zone-create' %}">{% fa5_icon 'plus' %} New zone</a>
+					<a class="btn btn-sm btn-primary" href="{% url 'config:zone-deploy' %}">{% fa5_icon 'cloud-upload-alt' %} Deploy zones</a>
 				</span>
 			</th>
 		</tr>
@@ -25,8 +25,8 @@
 		<th><a href="{{ zone.get_absolute_url }}">{{ zone.name }}</a></th>
 		<td>{% show_owner zone %}</td>
 		<td>
-			<a class="btn btn-sm btn-primary" href="{% url 'zone-edit' zone.pk %}">{% fa5_icon 'edit' %} edit</a>
-			<a class="btn btn-sm btn-primary" href="{% url 'zone-delete' zone.pk %}">{% fa5_icon 'trash' %} delete</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'config:zone-edit' zone.pk %}">{% fa5_icon 'edit' %} edit</a>
+			<a class="btn btn-sm btn-primary" href="{% url 'config:zone-delete' zone.pk %}">{% fa5_icon 'trash' %} delete</a>
 		</td>
 	</tr>
 	{% endif %}

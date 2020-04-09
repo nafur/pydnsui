@@ -14,12 +14,19 @@ Including another URLconf
 	2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import include, path
+
+from pydnsui import views
 
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('accounts/', include('django.contrib.auth.urls')),
-	path('', include('config.urls')),
+	path('config/', include('config.urls')),
+	path('',
+		login_required(views.IndexView.as_view()),
+		name = 'index',
+	),
 	path('federation/', include('federation.urls', namespace = 'fed')),
 	path('dyndns/', include('dyndns.urls')),
 ]
