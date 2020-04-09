@@ -13,18 +13,18 @@ from config import dnsutils
 from . import forms, models
 
 class HostCreateView(CrispyCreateView):
-	model = models.DynHost
+	model = models.Host
 	form_class = forms.HostCreateForm
 	template_name = 'dyndns/dynhost_form.html'
 	form_submit_text = 'Submit'
 
 	def get_form_kwargs(self):
 		kwargs = super(HostCreateView, self).get_form_kwargs()
-		kwargs['zone'] = models.DynZone.objects.get(pk = self.kwargs['pk'])
+		kwargs['zone'] = models.Zone.objects.get(pk = self.kwargs['pk'])
 		return kwargs
 
 class HostDeleteView(CrispyDeleteView):
-	model = models.DynHost
+	model = models.Host
 	
 	def get_success_url(self):
 		return reverse_lazy('ddns:zone-detail', kwargs = {
@@ -32,7 +32,7 @@ class HostDeleteView(CrispyDeleteView):
 		})
 
 class HostDetailView(DetailView):
-	model = models.DynHost
+	model = models.Host
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -52,7 +52,7 @@ class HostDetailView(DetailView):
 	
 
 class HostRenewTokenView(CrispyUpdateView):
-	model = models.DynHost
+	model = models.Host
 	template_name = 'dyndns/host_renew_token_form.html'
 	fields = []
 	

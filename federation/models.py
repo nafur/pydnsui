@@ -97,7 +97,7 @@ class Server(OwnedModel):
 			'pk': self.pk,
 		})
 
-class FedZone(OwnedModel):
+class Zone(OwnedModel):
 	name = models.CharField(
 		max_length = 255,
 		unique = True,
@@ -143,7 +143,7 @@ class FedZone(OwnedModel):
 	@staticmethod
 	def get_slave_zones():
 		servers = Server.objects.filter(remote = None)
-		return FedZone.objects.filter(
+		return Zone.objects.filter(
 			Q(enabled = True) & (
 				Q(slaves__in = servers) |
 				(Q(slaves_all = True) & ~Q(master__in = servers))

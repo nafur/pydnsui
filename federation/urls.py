@@ -160,14 +160,14 @@ urlpatterns = [
 	),
 	path('zone',
 		login_required(
-			ListView.as_view(model = models.FedZone)
+			ListView.as_view(model = models.Zone)
 		),
 		name = 'zone-list',
 	),
 	path('zone/create', 
 		login_required(
 			CrispyCreateView.as_view(
-				model = models.FedZone,
+				model = models.Zone,
 				fields = [
 					'name', 'enabled', 'master', 'slaves_all', 'slaves'
 				],
@@ -178,14 +178,14 @@ urlpatterns = [
 	),
 	path('zone/<int:pk>',
 		owner_required(
-			DetailView.as_view(model = models.FedZone)
+			DetailView.as_view(model = models.Zone)
 		),
 		name = 'zone-detail',
 	),
 	path('zone/<int:pk>/edit',
 		owner_required(
 			CrispyUpdateView.as_view(
-				model = models.FedZone,
+				model = models.Zone,
 				fields = [
 					'name', 'enabled', 'owners', 'master', 'slaves_all', 'slaves'
 				],
@@ -197,7 +197,7 @@ urlpatterns = [
 	path('zone/<int:pk>/disable',
 		owner_required(
 			DisableView.as_view(
-				model = models.FedZone,
+				model = models.Zone,
 				redirect_url = reverse_lazy('fed:zone-list')
 			)
 		),
@@ -206,7 +206,7 @@ urlpatterns = [
 	path('zone/<int:pk>/enable',
 		owner_required(
 			EnableView.as_view(
-				model = models.FedZone,
+				model = models.Zone,
 				redirect_url = reverse_lazy('fed:zone-list')
 			)
 		),

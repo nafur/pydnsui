@@ -10,14 +10,14 @@ app_name = 'ddns'
 urlpatterns = [
 	path('zones',
 		login_required(
-			ListView.as_view(model = models.DynZone)
+			ListView.as_view(model = models.Zone)
 		),
 		name = 'zone-list',
 	),
 	path('zone/create',
 		login_required(
 			CrispyCreateView.as_view(
-				model = models.DynZone,
+				model = models.Zone,
 				fields = [ 'zone', 'enabled'],
 				form_submit_text = 'Submit',
 			)
@@ -26,14 +26,14 @@ urlpatterns = [
 	),
 	path('zone/<int:pk>',
 		owner_required(
-			DetailView.as_view(model = models.DynZone)
+			DetailView.as_view(model = models.Zone)
 		),
 		name = 'zone-detail',
 	),
 	path('zone/<int:pk>/delete',
 		owner_required(
 			CrispyDeleteView.as_view(
-				model = models.DynZone,
+				model = models.Zone,
 				success_url = reverse_lazy('ddns:zone-list'),
 			)
 		),
@@ -42,7 +42,7 @@ urlpatterns = [
 	path('zone/<int:pk>/disable',
 		owner_required(
 			DisableView.as_view(
-				model = models.DynZone,
+				model = models.Zone,
 				redirect_url = reverse_lazy('ddns:zone-list')
 			)
 		),
@@ -51,7 +51,7 @@ urlpatterns = [
 	path('zone/<int:pk>/enable',
 		owner_required(
 			EnableView.as_view(
-				model = models.DynZone,
+				model = models.Zone,
 				redirect_url = reverse_lazy('ddns:zone-list')
 			)
 		),
@@ -60,7 +60,7 @@ urlpatterns = [
 	path('zone/<int:pk>/create-host',
 		owner_required(
 			views.HostCreateView.as_view(),
-			model = models.DynZone,
+			model = models.Zone,
 		),
 		name = 'host-create',
 	),

@@ -38,7 +38,7 @@ class ExportZonesView(View):
 			print(e)
 			return HttpResponse('Invalid token', status = 401)
 		print("Exporting zones for pulling server {} and slaves {}".format(remote.name, slaves))
-		zones = models.FedZone.objects.filter(
+		zones = models.Zone.objects.filter(
 			Q(enabled = True) &
 			Q(master__remote = None) & (
 				Q(slaves_all = True) | Q(slaves__name__in = slaves)

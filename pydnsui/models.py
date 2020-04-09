@@ -11,7 +11,7 @@ class OwnedModel(models.Model):
 
 	owners = models.ManyToManyField(User,
 		verbose_name = "Owners",
-		related_name = "+", #"set_{}_{}".format(__module__.replace('.', '_'), __name__), 
+		related_name = "owned_%(app_label)s_%(class)s",
 		help_text = "Users that are allowed to modify this object. Staff users can modify all objects.",
 	)
 

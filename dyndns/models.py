@@ -8,7 +8,7 @@ import config
 
 from pydnsui.models import *
 
-class DynZone(OwnedModel):
+class Zone(OwnedModel):
 	zone = models.ForeignKey(
 		config.models.Zone,
 		on_delete = models.CASCADE,
@@ -27,9 +27,9 @@ class DynZone(OwnedModel):
 			'pk': self.pk,
 		})
 
-class DynHost(OwnedModel):
+class Host(OwnedModel):
 	zone = models.ForeignKey(
-		DynZone,
+		Zone,
 		on_delete = models.CASCADE,
 		verbose_name = "Zone",
 		related_name = "hosts",
