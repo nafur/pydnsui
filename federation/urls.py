@@ -17,7 +17,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Remote,
-				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_token'],
+				fields = [ 'name', 'enabled', 'auth_token', 'pull_url', 'pull_token'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -33,7 +33,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Remote,
-				fields = [ 'name', 'enabled', 'admins', 'auth_token', 'pull_url', 'pull_token'],
+				fields = [ 'name', 'enabled', 'owner', 'auth_token', 'pull_url', 'pull_token'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -159,14 +159,14 @@ urlpatterns = [
 	),
 	path('zone',
 		login_required(
-			ListView.as_view(model = models.Zone)
+			ListView.as_view(model = models.FedZone)
 		),
 		name = 'zone-list',
 	),
 	path('zone/create', 
 		login_required(
 			CrispyCreateView.as_view(
-				model = models.Zone,
+				model = models.FedZone,
 				fields = [
 					'name', 'enabled', 'master', 'slaves_all', 'slaves'
 				],
@@ -177,14 +177,14 @@ urlpatterns = [
 	),
 	path('zone/<int:pk>',
 		login_required(
-			DetailView.as_view(model = models.Zone)
+			DetailView.as_view(model = models.FedZone)
 		),
 		name = 'zone-detail',
 	),
 	path('zone/<int:pk>/edit',
 		login_required(
 			CrispyUpdateView.as_view(
-				model = models.Zone,
+				model = models.FedZone,
 				fields = [
 					'name', 'enabled', 'master', 'slaves_all', 'slaves'
 				],
@@ -196,7 +196,7 @@ urlpatterns = [
 	path('zone/<int:pk>/disable',
 		login_required(
 			DisableView.as_view(
-				model = models.Zone,
+				model = models.FedZone,
 				redirect_url = reverse_lazy('fed:zone-list')
 			)
 		),
@@ -205,7 +205,7 @@ urlpatterns = [
 	path('zone/<int:pk>/enable',
 		login_required(
 			EnableView.as_view(
-				model = models.Zone,
+				model = models.FedZone,
 				redirect_url = reverse_lazy('fed:zone-list')
 			)
 		),

@@ -3,4 +3,4 @@ from federation.models import *
 
 admin.site.register(Remote)
 admin.site.register(Server)
-admin.site.register(Zone)
+admin.site.register(FedZone)

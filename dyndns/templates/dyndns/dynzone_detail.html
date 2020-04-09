@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% load fontawesome_5 %}
+{% load helpers %}
 
 {% block content %}
 <span class="float-right">
-	Admins:
-	{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
+	Owner: {% show_owner object %}
 </span>
 <h1>DynDNS::Zone {{ object.zone.name }}</h1>
 
@@ -23,24 +23,28 @@ Associated with <a href="{{ object.zone.get_absolute_url }}">{{ object.zone.name
 			<th>Name</th>
 			<th>Token</th>
 			<th>Last update</th>
+			<th>Owner</th>
 			<th>
 				<div class="float-right">
-					<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-create' zone.pk %}">{% fa5_icon 'plus' %} new host</a>
+					<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-create' object.pk %}">{% fa5_icon 'plus' %} new host</a>
 				</div>
 			</th>
 		</tr>
 	</thead>
 {% for host in object.hosts.all %}
+	{% if host.is_owned %}
 	<tr>
 		<td><strong>{{ host.name }}</strong>.{{ host.zone }}</td>
 		<td><code>{{ host.token }}</code></td>
 		<td>{{ host.last_update }}</td>
+		<td>{% show_owner host %}</td>
 		<td>
 			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-delete' host.pk %}">{% fa5_icon 'trash' %} delete</a>
 			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-renew-token' host.pk %}">{% fa5_icon 'redo' %} renew token</a>
 			<a class="btn btn-sm btn-primary" href="{% url 'ddns:host-usage' host.pk %}">{% fa5_icon 'angle-double-up' %} usage</a>
 		</td>
 	</tr>
+	{% endif %}
 {% endfor %}
 </table>
 

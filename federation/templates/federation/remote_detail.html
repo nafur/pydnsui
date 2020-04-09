@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load helpers %}
+
 {% block content %}
 <h1>Federation::Remote {{ object.name }}</h1>
 
@@ -8,8 +10,8 @@
 	<dd>{{ object.name }}</dd>
 	<dt>Enabled</dt>
 	<dd>{{ object.enabled }}</dd>
-	<dt>Admins</dt>
-	<dd>{% for u in server.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span>{% endfor %}</dd>
+	<dt>Owner</dt>
+	<dd>{% show_owner object %}</dd>
 	<dt>Authorization token</dt>
 	<dd><code>{{ object.auth_token }}</code></dd>
 	<dt>Pull</dt>

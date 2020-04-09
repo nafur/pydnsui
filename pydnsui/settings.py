@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'crispy_forms',
+	'cuser',
 	'fontawesome_5',
 	'config',
 	'dyndns',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'cuser.middleware.CuserMiddleware',
 ]
 
 ROOT_URLCONF = 'pydnsui.urls'

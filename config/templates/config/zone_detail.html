@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% load fontawesome_5 %}
+{% load helpers %}
 
 {% block content %}
 <span class="float-right">
-	Admins:
-	{% for u in object.admins.all %}<span class="badge badge-secondary">{{ u.username }}</span> {% endfor %}
+	Owner: {% show_owner object %}
 </span>
 <h1>Zone {{ object.name }}</h1>
 

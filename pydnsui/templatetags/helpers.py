@@ -20,3 +20,8 @@ def git_version():
 	hash = subprocess.run(['git', 'log', '-1', '--format=%h', '--date=relative'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
 	when = subprocess.run(['git', 'log', '-1', '--format=%cd', '--date=relative'], capture_output = True, cwd = settings.BASE_DIR).stdout.decode('utf8')
 	return mark_safe("git <a href=\"https://github.com/nafur/pydnsui/commit/{}\">version {}</a> from {}".format(describe, hash, when))
+
+@register.simple_tag
+def show_owner(obj):
+	return template.Template("{% for u in obj.owners.all %}<span class=\"badge badge-secondary\">{{ u.username }}</span>{% endfor %}").render(template.Context({'obj': obj}))
+	

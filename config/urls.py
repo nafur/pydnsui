@@ -22,7 +22,7 @@ urlpatterns = [
 		login_required(
 			CrispyCreateView.as_view(
 				model = models.Zone,
-				fields = ['name', 'admins'],
+				fields = ['name'],
 				form_submit_text = 'Submit',
 			)
 		),
@@ -44,7 +44,7 @@ urlpatterns = [
 		login_required(
 			CrispyUpdateView.as_view(
 				model = models.Zone,
-				fields = ['name', 'admins'],
+				fields = ['name', 'owners'],
 				form_submit_text = 'Submit',
 			)
 		),

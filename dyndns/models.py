@@ -6,7 +6,9 @@ from django.utils.crypto import get_random_string
 
 import config
 
-class Zone(models.Model):
+from pydnsui.models import *
+
+class DynZone(OwnedModel):
 	zone = models.ForeignKey(
 		config.models.Zone,
 		on_delete = models.CASCADE,
@@ -25,9 +27,9 @@ class Zone(models.Model):
 			'pk': self.pk,
 		})
 
-class Host(models.Model):
+class DynHost(OwnedModel):
 	zone = models.ForeignKey(
-		Zone,
+		DynZone,
 		on_delete = models.CASCADE,
 		verbose_name = "Zone",
 		related_name = "hosts",

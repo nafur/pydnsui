@@ -5,9 +5,11 @@ from django.db.models import F, Q
 from django.urls import reverse
 from django.utils import timezone
 
+from pydnsui.models import *
+
 from datetime import datetime, timedelta
 
-class Remote(models.Model):
+class Remote(OwnedModel):
 	name = models.CharField(
 		max_length = 255,
 		unique = True,
@@ -16,10 +18,6 @@ class Remote(models.Model):
 	enabled = models.BooleanField(
 		default = True,
 		verbose_name = "Remote is enabled",
-	)
-	admins = models.ManyToManyField(User,
-		verbose_name = "Admin users",
-		help_text = "Local users that may modify this remote.",
 	)
 	auth_token = models.CharField(
 		max_length = 255,
@@ -99,7 +97,7 @@ class Server(models.Model):
 			'pk': self.pk,
 		})
 
-class Zone(models.Model):
+class FedZone(models.Model):
 	name = models.CharField(
 		max_length = 255,
 		unique = True,
@@ -145,7 +143,7 @@ class Zone(models.Model):
 	@staticmethod
 	def get_slave_zones():
 		servers = Server.objects.filter(remote = None)
-		return Zone.objects.filter(
+		return FedZone.objects.filter(
 			Q(enabled = True) & (
 				Q(slaves__in = servers) |
 				(Q(slaves_all = True) & ~Q(master__in = servers))

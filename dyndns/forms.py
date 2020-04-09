@@ -4,7 +4,7 @@ from . import models
 
 class HostCreateForm(forms.ModelForm):
 	class Meta:
-		model = models.Host
+		model = models.DynHost
 		fields = ['zone', 'name']
 
 	def __init__(self, *args, **kwargs):

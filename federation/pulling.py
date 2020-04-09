@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from .models import Server, Zone
+from .models import Server, FedZone
 
 import copy
 import json
@@ -72,11 +72,11 @@ class Pull:
 			m.save()
 		for zone in zones:
 			try:
-				z = Zone.objects.get(name = zone['name'])
+				z = FedZone.objects.get(name = zone['name'])
 				z.master = zone['master']
 				z.slaves_all = zone['slaves_all']
-			except Zone.DoesNotExist as e:
-				z = Zone(
+			except FedZone.DoesNotExist as e:
+				z = FedZone(
 					name = zone['name'],
 					master = zone['master'],
 					slaves_all = zone['slaves_all']
