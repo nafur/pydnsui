@@ -93,7 +93,7 @@ def update_host(pk, token, ipv4 = None, ipv6 = None):
 		})
 	response = u.send()
 	host.last_update = timezone.now()
-	host.save()
+	host.save_unowned()
 	return HttpResponse("Response: {}".format(response))
 
 @method_decorator(csrf_exempt, name='dispatch')

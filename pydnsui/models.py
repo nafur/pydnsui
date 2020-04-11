@@ -31,6 +31,10 @@ class OwnedModel(models.Model):
 			super().save(*args, **kwargs)
 		else:
 			raise PermissionDenied()
+	
+	def save_unowned(self, *args, **kwargs):
+		"""In case you need to save an object that is not owned anyway."""
+		super().save(*args, **kwargs)
 
 	def delete(self, *args, **kwargs):
 		if self.is_owned():
