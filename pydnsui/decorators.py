@@ -2,8 +2,13 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 
 def owner_required(func, model = None, pk_field = 'pk'):
+
 	if model is None:
-		model = func.view_class.model
+		if func.view_class.model is not None:
+			model = func.view_class.model
+		elif func.view_initkwargs is not None and 'model' in func.view_initkwargs:
+			model = func.view_initkwargs['model']
+
 	def check_and_call(request, *args, **kwargs):
 		obj = None
 		try:
