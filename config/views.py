@@ -97,11 +97,11 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 		files = []
 		warnings = []
 		for zone in models.Zone.objects.all():
-			slaves = []
+			subordinates = []
 			fedzone = None
 			try:
 				fedzone = federation.models.Zone.objects.get(name = zone.name)
-				slaves = fedzone.get_slaves()
+				subordinates = fedzone.get_subordinates()
 			except:
 				warnings.append("The zone {} is configured locally, but not configured in the federation.".format(zone.name))
 			
@@ -111,7 +111,7 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 				'content': render_to_string('config/bind_zone.tpl', {
 					'basedir': settings.BIND_CONFIG_DIR,
 					'zone': zone,
-					'slaves': slaves,
+					'subordinates': subordinates,
 				}),
 				'include': True,
 			})
@@ -124,14 +124,14 @@ class ZoneDeployView(FormHelperMixin, base.TemplateResponseMixin, edit.FormMixin
 				'include': False,
 			})
 		
-		for zone in federation.models.Zone.get_slave_zones():
+		for zone in federation.models.Zone.get_subordinate_zones():
 			files.append({
 				'name': zone.name,
-				'filename': settings.BIND_CONFIG_DIR + 'slave_{}.conf'.format(zone.name),
-				'content': render_to_string('config/bind_slave_zone.tpl', {
+				'filename': settings.BIND_CONFIG_DIR + 'subordinate_{}.conf'.format(zone.name),
+				'content': render_to_string('config/bind_subordinate_zone.tpl', {
 					'basedir': settings.BIND_CONFIG_DIR,
 					'zone': zone,
-					'slaves': zone.get_slaves(),
+					'subordinates': zone.get_subordinates(),
 				}),
 				'include': True,
 			})

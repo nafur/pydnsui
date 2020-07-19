@@ -169,7 +169,7 @@ urlpatterns = [
 			CrispyCreateView.as_view(
 				model = models.Zone,
 				fields = [
-					'name', 'enabled', 'master', 'slaves_all', 'slaves'
+					'name', 'enabled', 'main', 'subordinates_all', 'subordinates'
 				],
 				form_submit_text = 'Submit',
 			)
@@ -187,7 +187,7 @@ urlpatterns = [
 			CrispyUpdateView.as_view(
 				model = models.Zone,
 				fields = [
-					'name', 'enabled', 'owners', 'master', 'slaves_all', 'slaves'
+					'name', 'enabled', 'owners', 'main', 'subordinates_all', 'subordinates'
 				],
 				form_submit_text = 'Submit',
 			)
