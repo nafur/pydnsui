@@ -22,11 +22,11 @@ class Pull:
 		return self.__warnings
 
 	def download(self):
-		slaves = Server.objects.filter(remote = None, enabled = True)
+		subordinates = Server.objects.filter(remote = None, enabled = True)
 		data = urllib.parse.urlencode({
 			'remote': self.__remote.name, 
 			'token': self.__remote.pull_token,
-			'slaves': [s.name for s in slaves],
+			'subordinates': [s.name for s in subordinates],
 		}, True).encode("utf8")
 		u = urllib.request.urlopen(self.__remote.pull_url, data = data)
 		return json.loads(u.read().decode('utf8'))
@@ -60,10 +60,10 @@ class Pull:
 			data['server'][s] = serv
 		zones = []
 		for zone in data['zones']:
-			if data['server'][zone['master']] == None:
+			if data['server'][zone['main']] == None:
 				continue
-			zone['master'] = data['server'][zone['master']]
-			zone['slaves'] = list(map(lambda s: data['server'][s], zone['slaves']))
+			zone['main'] = data['server'][zone['main']]
+			zone['subordinates'] = list(map(lambda s: data['server'][s], zone['subordinates']))
 			zones.append(zone)
 		return zones
 
@@ -73,16 +73,16 @@ class Pull:
 		for zone in zones:
 			try:
 				z = Zone.objects.get(name = zone['name'])
-				z.master = zone['master']
-				z.slaves_all = zone['slaves_all']
+				z.main = zone['main']
+				z.subordinates_all = zone['subordinates_all']
 			except Zone.DoesNotExist as e:
 				z = Zone(
 					name = zone['name'],
-					master = zone['master'],
-					slaves_all = zone['slaves_all']
+					main = zone['main'],
+					subordinates_all = zone['subordinates_all']
 				)
 			z.save()
-			z.slaves.set(zone['slaves'])
+			z.subordinates.set(zone['subordinates'])
 		self.__remote.pull_last = timezone.now()
 		self.__remote.save()
 

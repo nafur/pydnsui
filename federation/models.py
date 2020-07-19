@@ -106,19 +106,19 @@ class Zone(OwnedModel):
 		default = True,
 		verbose_name = "Zone is enabled",
 	)
-	master = models.ForeignKey(Server,
+	main = models.ForeignKey(Server,
 		on_delete = models.CASCADE,
-		verbose_name = "Master server",
-		related_name = "zones_master",
+		verbose_name = "Main server",
+		related_name = "zones_main",
 	)
-	slaves_all = models.BooleanField(
+	subordinates_all = models.BooleanField(
 		default = True,
-		verbose_name = "All servers are slaves",
+		verbose_name = "All servers are subordinates",
 	)
-	slaves = models.ManyToManyField(Server,
+	subordinates = models.ManyToManyField(Server,
 		blank = True,
-		verbose_name = "Slave servers",
-		related_name = "zones_slave",
+		verbose_name = "Subordinate servers",
+		related_name = "zones_subordinate",
 	)
 
 	def __str__(self):
@@ -129,23 +129,23 @@ class Zone(OwnedModel):
 		})
 	
 	def get_nameservers(self):
-		return [self.master.nameserver] + [
-			s.nameserver for s in self.get_slaves()
+		return [self.main.nameserver] + [
+			s.nameserver for s in self.get_subordinates()
 		]
 	
-	def get_slaves(self):
-		if self.slaves_all:
+	def get_subordinates(self):
+		if self.subordinates_all:
 			return Server.objects.filter(
-				Q(enabled = True) & ~Q(pk = self.master.pk)
+				Q(enabled = True) & ~Q(pk = self.main.pk)
 			)
-		return self.slaves.all()
+		return self.subordinates.all()
 
 	@staticmethod
-	def get_slave_zones():
+	def get_subordinate_zones():
 		servers = Server.objects.filter(remote = None)
 		return Zone.objects.filter(
 			Q(enabled = True) & (
-				Q(slaves__in = servers) |
-				(Q(slaves_all = True) & ~Q(master__in = servers))
+				Q(subordinates__in = servers) |
+				(Q(subordinates_all = True) & ~Q(main__in = servers))
 			)
 		)

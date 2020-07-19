@@ -28,20 +28,20 @@ class ExportZonesView(View):
 		Export all zones that
 		- are enabled
 		- belong to a server configured locally
-		- have one of the given slaves
+		- have one of the given subordinates
 		"""
 		try:
 			print("Looking for remote {} with token {}".format(request.POST['remote'], request.POST['token']))
 			remote = models.Remote.objects.get(auth_token = request.POST['token'])
-			slaves = request.POST.getlist('slaves')
+			subordinates = request.POST.getlist('subordinates')
 		except Exception as e:
 			print(e)
 			return HttpResponse('Invalid token', status = 401)
-		print("Exporting zones for pulling server {} and slaves {}".format(remote.name, slaves))
+		print("Exporting zones for pulling server {} and subordinates {}".format(remote.name, subordinates))
 		zones = models.Zone.objects.filter(
 			Q(enabled = True) &
-			Q(master__remote = None) & (
-				Q(slaves_all = True) | Q(slaves__name__in = slaves)
+			Q(main__remote = None) & (
+				Q(subordinates_all = True) | Q(subordinates__name__in = subordinates)
 			)
 		)
 		res = {
@@ -52,12 +52,12 @@ class ExportZonesView(View):
 		for z in zones:
 			res['zones'].append({
 				"name": z.name,
-				"master": z.master.name,
-				"slaves_all": z.slaves_all,
-				"slaves": list(map(lambda s: s.name, z.slaves.all())),
+				"main": z.main.name,
+				"subordinates_all": z.subordinates_all,
+				"subordinates": list(map(lambda s: s.name, z.subordinates.all())),
 			})
-			servers.add(z.master)
-			for s in z.slaves.all():
+			servers.add(z.main)
+			for s in z.subordinates.all():
 				servers.add(s)
 		for s in servers:
 			res['server'][s.name] = {

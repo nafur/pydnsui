@@ -53,10 +53,10 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
                 ('enabled', models.BooleanField(default=True, verbose_name='Zone is enabled')),
-                ('slaves_all', models.BooleanField(default=True, verbose_name='All servers are slaves')),
-                ('master', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='zones_master', to='federation.Server', verbose_name='Master server')),
+                ('subordinates_all', models.BooleanField(default=True, verbose_name='All servers are subordinates')),
+                ('main', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='zones_main', to='federation.Server', verbose_name='Main server')),
                 ('owners', models.ManyToManyField(help_text='Users that are allowed to modify this object. Staff users can modify all objects.', related_name='owned_federation_zone', to=settings.AUTH_USER_MODEL, verbose_name='Owners')),
-                ('slaves', models.ManyToManyField(blank=True, related_name='zones_slave', to='federation.Server', verbose_name='Slave servers')),
+                ('subordinates', models.ManyToManyField(blank=True, related_name='zones_subordinate', to='federation.Server', verbose_name='Subordinate servers')),
             ],
             options={
                 'abstract': False,
